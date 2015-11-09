@@ -1,0 +1,69 @@
+buildscript {
+    ext.kotlin_version = '1.0.0-beta-1103'
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+repositories {
+    jcenter()
+    mavenCentral()
+
+    maven {
+        url  "http://dl.bintray.com/exallium/maven"
+    }
+}
+
+Properties secureProps = new Properties()
+secureProps.load(new FileInputStream(project.getProjectDir().absolutePath + "/secure.properties"))
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+
+    defaultConfig {
+        applicationId "com.exallium.h5statstracker.app"
+        minSdkVersion 18
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+
+    buildTypes {
+        release {
+            resValue "string", "api_key", secureProps.getProperty('apiKey')
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            resValue "string", "api_key", secureProps.getProperty('apiKey')
+        }
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:design:23.0.1'
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    compile 'com.exallium.h5:lib:1.1'
+}
