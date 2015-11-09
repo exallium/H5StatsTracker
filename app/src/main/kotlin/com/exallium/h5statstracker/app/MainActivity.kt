@@ -1,36 +1,43 @@
-package com.exallium.h5statstracker.app;
+package com.exallium.h5statstracker.app
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
-class MainActivity : AppCompatActivity(), MainController.Callbacks {
+import kotlinx.android.synthetic.base.contentFrame
+import kotlinx.android.synthetic.toolbar.toolbar_title
 
-    override fun getGamertag(): String? {
-        return getSharedPreferences(Constants.PREFERENCES, Constants.PREFERENCE_MODE)
-            .getString(Constants.GAMERTAG, null)
+class MainActivity : AppCompatActivity(), Router.Listener {
+
+    override fun goToScreen(request: Router.Request) {
+
+        if (!request.bundle.containsKey(Constants.GAMERTAG)) {
+            request.bundle.putString(Constants.GAMERTAG, mainController.getGamertag())
+        }
+
+        val view = getRouterView(request, this, mainController)
+        contentFrame.removeAllViews()
+        contentFrame.addView(view)
+        toolbar_title.text = getString(request.route.titleId).interpolate(request.bundle)
     }
 
-    override fun showContentGamertag() {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.contentFrame, GamertagFragment.create())
-                .commit()
-    }
-
-    override fun showContentServiceRecord() {
-        throw UnsupportedOperationException()
-    }
-
-    val mainController = MainController()
+    lateinit var mainController: MainController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.base)
+        mainController = MainController(applicationContext)
+        Router.onCreate(this)
     }
 
     override fun onResume() {
         super.onResume()
-        mainController.onResume(this)
+        mainController.onResume()
+    }
+
+    override fun onBackPressed() {
+        if (!Router.goBack()) {
+            super.onBackPressed()
+        }
     }
 
 }

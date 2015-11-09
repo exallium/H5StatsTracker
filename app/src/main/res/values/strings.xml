@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">H5StatsTracker</string>
+    <string name="gamertag_hint">XBox Live Gamertag</string>
+    <string name="submit">Submit</string>
+
+    <string name="service_record_title">Service Record of {com.exallium.h5statstracker.app.GAMERTAG}</string>
+    <string name="gamertag_title">Setup</string>
 </resources>
