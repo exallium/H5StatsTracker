@@ -10,14 +10,12 @@ class MainActivity : AppCompatActivity(), Router.Listener {
 
     override fun goToScreen(request: Router.Request) {
 
-        if (!request.bundle.containsKey(Constants.GAMERTAG)) {
-            request.bundle.putString(Constants.GAMERTAG, mainController.getGamertag())
-        }
-
         val view = getRouterView(request, this, mainController)
         contentFrame.removeAllViews()
         contentFrame.addView(view)
-        toolbar_title.text = getString(request.route.titleId).interpolate(request.bundle)
+
+        val bundle = mainController.prepareBundle(request.bundle)
+        toolbar_title.text = getString(request.route.titleId).interpolate(bundle)
     }
 
     lateinit var mainController: MainController

@@ -61,4 +61,18 @@ public class MainController(val context: Context) {
         })
     }
 
+    fun prepareBundle(bundle: Bundle): Bundle {
+        val prepBundle = if (bundle.containsKey(Constants.ACTIVITY_BUNDLE)) {
+            bundle.getBundle(Constants.ACTIVITY_BUNDLE)
+        } else {
+            Bundle()
+        }
+
+        if (!prepBundle.containsKey(Constants.GAMERTAG)) {
+            prepBundle.putString(Constants.GAMERTAG, getGamertag())
+        }
+
+        return prepBundle;
+    }
+
 }

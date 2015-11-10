@@ -13,6 +13,8 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+apply from: 'build.workaround-missing-resource.gradle'
+
 repositories {
     jcenter()
     mavenCentral()
@@ -56,6 +58,7 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
     }
 }
 
@@ -70,4 +73,7 @@ dependencies {
     compile 'com.squareup.flow:flow:0.8'
 
     compile 'com.exallium.h5:lib:1.1'
+
+    testCompile 'junit:junit:4.12'
+    testCompile "org.robolectric:robolectric:3.0"
 }
