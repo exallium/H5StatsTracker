@@ -13,7 +13,7 @@ val getArenaInfographicViewByType = { viewType: Int, context: Context ->
     }
 }
 
-public class HeaderView(context: Context) : InfographicView<ArenaResult>(context, R.layout.servicereport_arena_header) {
+public class HeaderView(context: Context) : InfographicView<ArenaResult>(context, R.layout.servicereport_header) {
     override fun render(data: ArenaResult) {
         (findViewById(R.id.header_title) as TextView).text = "Arena Service Record for %s".format(data.player.gamertag)
     }

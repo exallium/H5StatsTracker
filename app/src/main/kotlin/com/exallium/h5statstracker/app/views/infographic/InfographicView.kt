@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 
-abstract class InfographicView<T>(context: Context, val layoutId: Int) : FrameLayout(context) {
+abstract class InfographicView<in T>(context: Context, val layoutId: Int) : FrameLayout(context) {
 
     init {
         LayoutInflater.from(context).inflate(layoutId, this)

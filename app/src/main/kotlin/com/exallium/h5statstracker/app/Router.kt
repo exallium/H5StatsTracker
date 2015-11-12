@@ -22,12 +22,13 @@ public object Router : Flow.Listener {
     public data class Request(val route: Route, val bundle: Bundle = Bundle())
 
     public enum class Route(val titleId: Int) {
+        SERVICE_RECORD_SUMMARY(R.string.service_record),
         ARENA_SERVICE_RECORD(R.string.arena_service_record_title),
         GAMERTAG(R.string.gamertag_title)
     }
 
     private val bundle = Bundle()
-    private val backstack = Backstack.single(Request(Route.ARENA_SERVICE_RECORD, bundle))
+    private val backstack = Backstack.single(Request(Route.SERVICE_RECORD_SUMMARY, bundle))
     private val flow = Flow(backstack, this)
 
     public fun onCreate(listener: Listener) {

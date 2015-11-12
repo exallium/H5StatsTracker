@@ -9,4 +9,5 @@ public object Constants {
     // Bundles
     public val ACTIVITY_BUNDLE = "h5.bundle.BUNDLE"
     public val GAMERTAG = "h5.bundle.GAMERTAG"
+    public val SUFFIX = "h5.bundle.SUFFIX"
 }
