@@ -3,14 +3,16 @@ package com.exallium.h5statstracker.app
 import android.content.Context
 import android.os.Bundle
 import com.exallium.h5.api.ApiFactory
+import com.exallium.h5statstracker.app.model.Cache
 import com.exallium.h5statstracker.app.services.MetadataService
 import com.exallium.h5statstracker.app.services.StatsService
 
 public class MainController(val context: Context) {
 
+    val cache = Cache(context.cacheDir)
     val apiFactory = ApiFactory(context.resources.getString(R.string.api_key))
     val statsService = StatsService(this)
-    val metadataService = MetadataService(apiFactory)
+    val metadataService = MetadataService(apiFactory, cache)
 
     public fun getGamertag() = context
             .getSharedPreferences(Constants.PREFERENCES, Constants.PREFERENCE_MODE)
