@@ -3,7 +3,7 @@
     <string name="gamertag_hint">XBox Live Gamertag</string>
     <string name="submit">Submit</string>
 
-    <string name="service_record">Service Record Summary</string>
+    <string name="service_record">Stats Summary</string>
     <string name="arena_service_record_title">Arena Service Record for {h5.bundle.GAMERTAG}</string>
     <string name="gamertag_title">Setup</string>
 

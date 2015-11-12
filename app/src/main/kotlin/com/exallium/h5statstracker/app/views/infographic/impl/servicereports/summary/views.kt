@@ -1,5 +1,7 @@
 package com.exallium.h5statstracker.app.views.infographic.impl.servicereports.summary
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -9,6 +11,7 @@ import com.exallium.h5statstracker.app.R
 import com.exallium.h5statstracker.app.services.MetadataService
 import com.exallium.h5statstracker.app.views.infographic.InfographicView
 import com.squareup.picasso.Picasso
+import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.ui.successUi
 
 val getSummaryInfographicViewByType: (Int, Context, MetadataService) -> InfographicView<BaseServiceRecordResult> = {
@@ -41,9 +44,24 @@ public class ArenaStatsSummaryView(context: Context, val metadataService: Metada
         (findViewById(R.id.service_rank) as TextView).text = "%s%d".format(context.getString(R.string.sr), data.spartanRank)
 
         // get rank info
-        metadataService.getSpartanRank(data.spartanRank + 1) successUi {
-            (findViewById(R.id.xp_progress_bar) as ProgressBar).progress = Math.round(data.xp.toFloat() / it.startXp.toFloat()) * 100
-            (findViewById(R.id.xp_progress_text) as TextView).text = "%d / %d".format(data.xp, it.startXp)
+        val currentRankPromise = metadataService.getSpartanRank(data.spartanRank)
+        val nextRankPromise = metadataService.getSpartanRank(data.spartanRank + 1)
+
+        combine(currentRankPromise, nextRankPromise) successUi {
+
+            val currentRank = currentRankPromise.get()
+            val nextRank = nextRankPromise.get()
+
+            val delta = nextRank.startXp - currentRank.startXp
+            val progress = data.xp - currentRank.startXp
+
+            val progressBar = (findViewById(R.id.xp_progress_bar) as ProgressBar)
+            val progressBarEndValue = Math.round((progress.toFloat() / delta.toFloat()) * 100)
+            val anim = ObjectAnimator.ofInt(progressBar, "progress", progressBarEndValue)
+            anim.setDuration(750)
+            anim.start()
+
+            (findViewById(R.id.xp_progress_text) as TextView).text = "%d / %d".format(progress, delta)
         }
 
         metadataService.getPlaylist(data.arenaStat.highestCsrPlaylistId) successUi {

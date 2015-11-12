@@ -34,6 +34,7 @@ class MetadataService(val apiFactory: ApiFactory) {
         if (!response.isSuccess) {
             throw IllegalAccessException("Bad times: %d".format(response.code()))
         }
+
         response.body()
     }
 
