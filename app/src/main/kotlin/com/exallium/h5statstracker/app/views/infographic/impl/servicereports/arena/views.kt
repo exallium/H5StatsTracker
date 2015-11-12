@@ -4,9 +4,10 @@ import android.content.Context
 import android.widget.TextView
 import com.exallium.h5.api.models.stats.servicerecords.ArenaResult
 import com.exallium.h5statstracker.app.R
+import com.exallium.h5statstracker.app.services.MetadataService
 import com.exallium.h5statstracker.app.views.infographic.InfographicView
 
-val getArenaInfographicViewByType = { viewType: Int, context: Context ->
+val getArenaInfographicViewByType = { viewType: Int, context: Context, metadataService: MetadataService ->
     when (viewType) {
         0 -> HeaderView(context)
         else -> throw IllegalStateException("Unknown ViewType %d".format(viewType))

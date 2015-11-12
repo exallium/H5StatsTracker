@@ -4,8 +4,8 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.exallium.h5.api.models.stats.servicerecords.ArenaStat
-import com.exallium.h5.api.models.stats.servicerecords.BaseServiceRecordResult
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.exallium.h5statstracker.app.views.GamertagContentView
 import com.exallium.h5statstracker.app.views.infographic.InfographicAdapter
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.arena.ArenaServiceRecordDataFactory
@@ -25,14 +25,15 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
 
 private fun buildServiceRecordView(request: Router.Request, context: Context, controller: MainController): View {
     val view = RecyclerView(context)
+    view.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     view.layoutManager = LinearLayoutManager(context)
     when (request.route) {
-        Router.Route.SERVICE_RECORD_SUMMARY -> view.adapter = InfographicAdapter<BaseServiceRecordResult>(
+        Router.Route.SERVICE_RECORD_SUMMARY -> view.adapter = InfographicAdapter(
                 getSummaryInfographicViewByType,
-                SummaryDataFactory(controller, request.bundle))
+                SummaryDataFactory(controller, request.bundle), controller.metadataService)
         Router.Route.ARENA_SERVICE_RECORD -> view.adapter = InfographicAdapter(
                 getArenaInfographicViewByType,
-                ArenaServiceRecordDataFactory(controller, request.bundle))
+                ArenaServiceRecordDataFactory(controller, request.bundle), controller.metadataService)
         else -> throw IllegalStateException("Unknown Service Record Type")
     }
     return view

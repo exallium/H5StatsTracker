@@ -9,5 +9,8 @@
 
     <!-- Service Record Summary -->
     <string name="sr">SR</string>
-    <string name="top_csr">Top CSR</string>
+    <string name="top_csr">TOP CSR</string>
+    <string name="kd">K/D</string>
+    <string name="kills">Kills</string>
+    <string name="deaths">Deaths</string>
 </resources>

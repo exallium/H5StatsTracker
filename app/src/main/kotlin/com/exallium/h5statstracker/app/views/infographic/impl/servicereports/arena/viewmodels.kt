@@ -10,8 +10,8 @@ import com.exallium.h5statstracker.app.views.infographic.SimpleViewModel
 public class ArenaServiceRecordDataFactory(val mainController: MainController, val bundle: Bundle?) : InfographicDataFactory<ArenaResult> {
     override fun getViewModels(fn: (List<InfographicViewModel<ArenaResult>>) -> Unit) {
 
-        val promise = mainController.onRequestArenaServiceRecord(bundle)
-        promise.success { fn(listOf(HeaderViewModel(it))) }
+        val promise = mainController.statsService.onRequestArenaServiceRecord(bundle)
+        promise.success { it?.let { fn(listOf(HeaderViewModel(it))) } }
     }
 
 }

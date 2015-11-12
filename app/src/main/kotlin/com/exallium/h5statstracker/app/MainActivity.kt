@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity
 
 import kotlinx.android.synthetic.base.contentFrame
 import kotlinx.android.synthetic.toolbar.toolbar_title
+import nl.komponents.kovenant.android.startKovenant
+import nl.komponents.kovenant.android.stopKovenant
 
 class MainActivity : AppCompatActivity(), Router.Listener {
 
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity(), Router.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startKovenant()
         setContentView(R.layout.base)
         mainController = MainController(applicationContext)
         Router.onCreate(this)
@@ -30,6 +33,11 @@ class MainActivity : AppCompatActivity(), Router.Listener {
     override fun onResume() {
         super.onResume()
         mainController.onResume()
+    }
+
+    override fun onDestroy() {
+        stopKovenant()
+        super.onDestroy()
     }
 
     override fun onBackPressed() {

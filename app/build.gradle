@@ -75,6 +75,9 @@ dependencies {
     compile 'com.exallium.h5:lib:1.1'
     compile 'nl.komponents.kovenant:kovenant-core:2.9.0'
     compile 'nl.komponents.kovenant:kovenant-combine:2.9.0'
+    compile 'nl.komponents.kovenant:kovenant-android:2.9.0'
+
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     testCompile 'junit:junit:4.12'
     testCompile "org.robolectric:robolectric:3.0"

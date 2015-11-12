@@ -3,17 +3,14 @@ package com.exallium.h5statstracker.app
 import android.content.Context
 import android.os.Bundle
 import com.exallium.h5.api.ApiFactory
-import com.exallium.h5.api.models.stats.servicerecords.*
-import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.async
-import retrofit.Call
-import retrofit.Callback
-import retrofit.Response
-import retrofit.Retrofit
+import com.exallium.h5statstracker.app.services.MetadataService
+import com.exallium.h5statstracker.app.services.StatsService
 
 public class MainController(val context: Context) {
 
     val apiFactory = ApiFactory(context.resources.getString(R.string.api_key))
+    val statsService = StatsService(this)
+    val metadataService = MetadataService(apiFactory)
 
     public fun getGamertag() = context
             .getSharedPreferences(Constants.PREFERENCES, Constants.PREFERENCE_MODE)
@@ -31,44 +28,6 @@ public class MainController(val context: Context) {
         context.getSharedPreferences(Constants.PREFERENCES, Constants.PREFERENCE_MODE)
             .edit().putString(Constants.GAMERTAG, gamertag).apply()
         Router.goBack()
-    }
-
-    fun onRequestArenaServiceRecord(bundle: Bundle?): Promise<ArenaResult, Exception> {
-        return onRequestServiceRecord(bundle, { apiFactory.stats.getArenaServiceRecords(it) })
-    }
-
-    fun onRequestCampaignServiceRecord(bundle: Bundle?): Promise<CampaignResult, Exception> {
-        return onRequestServiceRecord(bundle, { apiFactory.stats.getCampaignServiceRecords(it) })
-    }
-
-    fun onRequestCustomServiceRecord(bundle: Bundle?): Promise<CustomResult, Exception> {
-        return onRequestServiceRecord(bundle, { apiFactory.stats.getCustomServiceRecords(it) })
-    }
-
-    fun onRequestWarzoneServiceRecord(bundle: Bundle?): Promise<WarzoneResult, Exception> {
-        return onRequestServiceRecord(bundle, { apiFactory.stats.getWarzoneServiceRecords(it) })
-    }
-
-    private fun <T> onRequestServiceRecord(bundle: Bundle?,
-                                   serviceRecordFn: (List<String?>) -> Call<ServiceRecordCollection<T>>): Promise<T, Exception> {
-        val gamertag = if (bundle?.containsKey(Constants.GAMERTAG)?:false) {
-            bundle?.getString(Constants.GAMERTAG)
-        } else {
-            getGamertag()
-        }
-
-        return async {
-            val response = serviceRecordFn(listOf(gamertag)).execute()
-            if (response.code() == 200 && response.body().results.size != 0) {
-                val result = response.body().results.first()
-
-                if (result.resultCode == 0) {
-                    result.result
-                }
-            }
-
-            throw IllegalAccessException("No Result Available")
-        }
     }
 
     fun prepareBundle(bundle: Bundle): Bundle {

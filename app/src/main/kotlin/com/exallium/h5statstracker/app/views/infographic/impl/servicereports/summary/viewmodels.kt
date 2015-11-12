@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import com.exallium.h5.api.models.stats.servicerecords.*
 import com.exallium.h5statstracker.app.MainController
-import com.exallium.h5statstracker.app.ViewCallback
 import com.exallium.h5statstracker.app.views.infographic.InfographicDataFactory
 import com.exallium.h5statstracker.app.views.infographic.InfographicViewModel
-import nl.komponents.kovenant.all
 import nl.komponents.kovenant.combine.combine
+import nl.komponents.kovenant.ui.successUi
+import java.util.*
 
 public enum class Section {
     ARENA, WARZONE, CAMPAIGN, CUSTOM
@@ -20,39 +20,50 @@ public class SummaryDataFactory(val mainController: MainController, val bundle: 
     override fun getViewModels(fn: (List<InfographicViewModel<BaseServiceRecordResult>>) -> Unit) {
 
         // 4 calls
-        val arenaPromise = mainController.onRequestArenaServiceRecord(bundle)
-        val warzonePromise = mainController.onRequestWarzoneServiceRecord(bundle)
-        val campaignPromise = mainController.onRequestCampaignServiceRecord(bundle)
-        val customPromise = mainController.onRequestCustomServiceRecord(bundle)
+        val statsService = mainController.statsService;
+        val arenaPromise = statsService.onRequestArenaServiceRecord(bundle)
+        val warzonePromise = statsService.onRequestWarzoneServiceRecord(bundle)
+        val campaignPromise = statsService.onRequestCampaignServiceRecord(bundle)
+        val customPromise = statsService.onRequestCustomServiceRecord(bundle)
 
-        combine(arenaPromise, warzonePromise, campaignPromise, customPromise) success {
+        combine(arenaPromise, warzonePromise, campaignPromise, customPromise) successUi {
             val arena = arenaPromise.get()
             val warzone = warzonePromise.get()
             val campaign = campaignPromise.get()
             val custom = customPromise.get()
 
-            fn(listOf(
-                    HeaderViewModel(arena, Section.ARENA),
-                    ArenaStatsViewModel(arena),
-                    HeaderViewModel(warzone, Section.WARZONE),
-                    WarzoneStatsViewModel(warzone),
-                    HeaderViewModel(campaign, Section.CAMPAIGN),
-                    CampaignStatsViewModel(campaign),
-                    HeaderViewModel(custom, Section.CUSTOM),
-                    CustomStatsViewModel(custom)
-            ))
+            val list = LinkedList<InfographicViewModel<BaseServiceRecordResult>>()
+
+            arena?.let {
+                list.add(HeaderViewModel(arena, Section.ARENA))
+                list.add(ArenaStatsViewModel(arena))
+            }
+
+            warzone?.let {
+                list.add(HeaderViewModel(warzone, Section.WARZONE))
+                list.add(WarzoneStatsViewModel(warzone))
+            }
+
+            campaign?.let {
+                list.add(HeaderViewModel(campaign, Section.CAMPAIGN))
+                list.add(CampaignStatsViewModel(campaign))
+            }
+
+            custom?.let {
+                list.add(HeaderViewModel(custom, Section.CUSTOM))
+                list.add(CustomStatsViewModel(custom))
+            }
+
+            fn(list)
         } fail {
-            Log.d("SummaryDataFactory", "Something bad happened")
+            Log.d("SummaryDataFactory", "Something bad happened", it)
         }
 
     }
 }
 
-public class HeaderViewModel(t: BaseServiceRecordResult, val section: Section) : InfographicViewModel<BaseServiceRecordResult> {
-    override fun getData(): BaseServiceRecordResult {
-        throw UnsupportedOperationException()
-    }
-
+public class HeaderViewModel(val t: BaseServiceRecordResult, val section: Section) : InfographicViewModel<BaseServiceRecordResult> {
+    override fun getData() = t
     override fun getViewType() = HEADER_PREFIX + section.ordinal
 }
 

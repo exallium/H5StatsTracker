@@ -1,18 +1,24 @@
 package com.exallium.h5statstracker.app.views.infographic.impl.servicereports.summary
 
 import android.content.Context
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.exallium.h5.api.models.stats.servicerecords.*
 import com.exallium.h5statstracker.app.R
+import com.exallium.h5statstracker.app.services.MetadataService
 import com.exallium.h5statstracker.app.views.infographic.InfographicView
+import com.squareup.picasso.Picasso
+import nl.komponents.kovenant.ui.successUi
 
-val getSummaryInfographicViewByType: (Int, Context) -> InfographicView<BaseServiceRecordResult> = { viewType: Int, context: Context ->
+val getSummaryInfographicViewByType: (Int, Context, MetadataService) -> InfographicView<BaseServiceRecordResult> = {
+    viewType: Int, context: Context, metadataService: MetadataService ->
     when (viewType) {
         HEADER_PREFIX + Section.ARENA.ordinal -> HeaderView(context, Section.ARENA)
         HEADER_PREFIX + Section.WARZONE.ordinal -> HeaderView(context, Section.WARZONE)
         HEADER_PREFIX + Section.CAMPAIGN.ordinal -> HeaderView(context, Section.CAMPAIGN)
         HEADER_PREFIX + Section.CUSTOM.ordinal -> HeaderView(context, Section.CUSTOM)
-        Section.ARENA.ordinal -> ArenaStatsSummaryView(context)
+        Section.ARENA.ordinal -> ArenaStatsSummaryView(context, metadataService)
         Section.WARZONE.ordinal -> WarzoneStatsSummaryView(context)
         Section.CAMPAIGN.ordinal -> CampaignStatsSummaryView(context)
         Section.CUSTOM.ordinal -> CustomStatsSummaryView(context)
@@ -26,7 +32,7 @@ public class HeaderView(context: Context, val section: Section) : InfographicVie
     }
 }
 
-public class ArenaStatsSummaryView(context: Context) : InfographicView<BaseServiceRecordResult>(context, R.layout.servicereport_arena_summary) {
+public class ArenaStatsSummaryView(context: Context, val metadataService: MetadataService) : InfographicView<BaseServiceRecordResult>(context, R.layout.servicereport_arena_summary) {
     override fun render(data: BaseServiceRecordResult) {
         if (data !is ArenaResult) {
             return
@@ -34,11 +40,28 @@ public class ArenaStatsSummaryView(context: Context) : InfographicView<BaseServi
 
         (findViewById(R.id.service_rank) as TextView).text = "%s%d".format(context.getString(R.string.sr), data.spartanRank)
 
-        val xp = data.xp
+        // get rank info
+        metadataService.getSpartanRank(data.spartanRank + 1) successUi {
+            (findViewById(R.id.xp_progress_bar) as ProgressBar).progress = Math.round(data.xp.toFloat() / it.startXp.toFloat()) * 100
+            (findViewById(R.id.xp_progress_text) as TextView).text = "%d / %d".format(data.xp, it.startXp)
+        }
 
-        (findViewById(R.id.xp_progress_text))
-        (findViewById(R.id.top_variant_name) as TextView).text = data.arenaStat.highestCsrPlaylistId
+        metadataService.getPlaylist(data.arenaStat.highestCsrPlaylistId) successUi {
+            (findViewById(R.id.top_variant_name) as TextView).text = it?.name
+        }
 
+        metadataService.getCsrDesignation(data.arenaStat.highestCsrAttained.designationId.toLong()) successUi {
+            val tier = it?.tiers?.find { it.id == data.arenaStat.highestCsrAttained.tier.toLong() }
+            tier?.let {
+                Picasso.with(context).load(tier.iconImageUrl).into((findViewById(R.id.csr_image) as ImageView))
+            }
+        }
+
+        val totalKills = data.arenaStat.totalKills
+        val totalDeaths = data.arenaStat.totalDeaths
+        (findViewById(R.id.kdr) as TextView).text = "%.3f".format(totalKills.toFloat() / (if (totalDeaths == 0) 1f else totalDeaths.toFloat()))
+        (findViewById(R.id.total_kills) as TextView).text = totalKills.toString()
+        (findViewById(R.id.total_deaths) as TextView).text = totalDeaths.toString()
     }
 }
 
