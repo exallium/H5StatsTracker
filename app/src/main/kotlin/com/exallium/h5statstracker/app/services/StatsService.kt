@@ -4,29 +4,46 @@ import android.os.Bundle
 import com.exallium.h5.api.models.stats.servicerecords.*
 import com.exallium.h5statstracker.app.Constants
 import com.exallium.h5statstracker.app.MainController
+import com.exallium.h5statstracker.app.Units
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.async
 import retrofit.Call
+import timber.log.Timber
 
 class StatsService(val mainController: MainController) {
 
+    companion object {
+        val WARZONE_RESULT_KEY = "warzoneResult"
+        val ARENA_RESULT_KEY = "arenaResult"
+        val CAMPAIGN_RESULT_KEY = "campaignResult"
+        val CUSTOM_RESULT_KEY = "customResult"
+        val RESULT_TTL = Units.MINUTE_MILLIS * 5
+    }
+
     fun onRequestArenaServiceRecord(bundle: Bundle?): Promise<ArenaResult?, Exception> {
-        return onRequestServiceRecord(bundle, { mainController.apiFactory.stats.getArenaServiceRecords(it) })
+        return onRequestServiceRecord(bundle, ARENA_RESULT_KEY, RESULT_TTL,
+                ArenaResult::class.java, { mainController.apiFactory.stats.getArenaServiceRecords(it) })
     }
 
     fun onRequestCampaignServiceRecord(bundle: Bundle?): Promise<CampaignResult?, Exception> {
-        return onRequestServiceRecord(bundle, { mainController.apiFactory.stats.getCampaignServiceRecords(it) })
+        return onRequestServiceRecord(bundle, CAMPAIGN_RESULT_KEY, RESULT_TTL,
+                CampaignResult::class.java, { mainController.apiFactory.stats.getCampaignServiceRecords(it) })
     }
 
     fun onRequestCustomServiceRecord(bundle: Bundle?): Promise<CustomResult?, Exception> {
-        return onRequestServiceRecord(bundle, { mainController.apiFactory.stats.getCustomServiceRecords(it) })
+        return onRequestServiceRecord(bundle, CUSTOM_RESULT_KEY, RESULT_TTL,
+                CustomResult::class.java, { mainController.apiFactory.stats.getCustomServiceRecords(it) })
     }
 
     fun onRequestWarzoneServiceRecord(bundle: Bundle?): Promise<WarzoneResult?, Exception> {
-        return onRequestServiceRecord(bundle, { mainController.apiFactory.stats.getWarzoneServiceRecords(it) })
+        return onRequestServiceRecord(bundle, WARZONE_RESULT_KEY, RESULT_TTL,
+                WarzoneResult::class.java, { mainController.apiFactory.stats.getWarzoneServiceRecords(it) })
     }
 
     private fun <T> onRequestServiceRecord(bundle: Bundle?,
+                                           resultKey: String,
+                                           resultTtl: Long,
+                                           resultClass: Class<T>,
                                            serviceRecordFn: (List<String?>) -> Call<ServiceRecordCollection<T>>): Promise<T?, Exception> {
         val gamertag = if (bundle?.containsKey(Constants.GAMERTAG)?:false) {
             bundle?.getString(Constants.GAMERTAG)
@@ -35,14 +52,38 @@ class StatsService(val mainController: MainController) {
         }
 
         return async {
-            val response = serviceRecordFn(listOf(gamertag)).execute()
-            if (response.code() == 200 && response.body().results.size != 0) {
-                val result = response.body().results.first()
-
-                if (result.resultCode == 0) {
-                    result.result
-                } else { null }
-            } else { null }
+            val key = "%s-%s".format(resultKey, gamertag)
+            Timber.i("Retrieving Service Record $key")
+            val memoryResult = mainController.memoryCache.readItem(key, resultClass)
+            if (memoryResult != null) {
+                Timber.i("Memory Cache Hit for $key")
+                memoryResult
+            } else {
+                Timber.i("Memory Cache Miss for $key")
+                val diskResult = mainController.diskCache.readItem(key, resultClass)
+                if (diskResult != null) {
+                    Timber.i("Disk Cache Hit for $key")
+                    diskResult
+                } else {
+                    Timber.i("Disk Cache Miss for $key")
+                    val response = serviceRecordFn(listOf(gamertag)).execute()
+                    if (response.code() == 200 && response.body().results.size != 0) {
+                        val result = response.body().results.first()
+                        if (result.resultCode == 0) {
+                            Timber.i("Network Hit for $key")
+                            mainController.diskCache.write(result.result as Any, key, resultTtl)
+                            mainController.memoryCache.write(result.result as Any, key, resultTtl)
+                            result.result
+                        } else {
+                            Timber.i("Network Miss for $key")
+                            null
+                        }
+                    } else {
+                        Timber.i("Network Miss for $key")
+                        null
+                    }
+                }
+            }
         }
     }
 

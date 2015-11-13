@@ -19,3 +19,9 @@ public tailrec fun String.interpolate(bundle: Bundle?): String {
     return newString
 
 }
+
+public object Units {
+    val MONTH_MILLIS = 2629746000L
+    val DAY_MILLIS = 86400000L
+    val MINUTE_MILLIS = 60000L
+}

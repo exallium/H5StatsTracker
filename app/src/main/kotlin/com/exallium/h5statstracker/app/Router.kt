@@ -28,7 +28,7 @@ public object Router : Flow.Listener {
     }
 
     private val bundle = Bundle()
-    private val backstack = Backstack.single(Request(Route.SERVICE_RECORD_SUMMARY, bundle))
+    private val backstack = Backstack.single(Request(Route.GAMERTAG, bundle))
     private val flow = Flow(backstack, this)
 
     public fun onCreate(listener: Listener) {
@@ -42,6 +42,10 @@ public object Router : Flow.Listener {
 
     public fun goBack(): Boolean {
         return flow.goBack();
+    }
+
+    public fun replaceTo(request: Request) {
+        flow.replaceTo(request)
     }
 
 }

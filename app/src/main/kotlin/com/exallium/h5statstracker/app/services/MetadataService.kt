@@ -4,77 +4,77 @@ import com.exallium.h5.api.ApiFactory
 import com.exallium.h5.api.models.metadata.CSRDesignation
 import com.exallium.h5.api.models.metadata.Playlist
 import com.exallium.h5.api.models.metadata.SpartanRank
-import com.exallium.h5statstracker.app.model.Cache
-import nl.komponents.kovenant.Promise
+import com.exallium.h5statstracker.app.Units
+import com.exallium.h5statstracker.app.model.BaseCache
 import nl.komponents.kovenant.async
 import nl.komponents.kovenant.then
+import retrofit.Call
+import timber.log.Timber
 
-class MetadataService(val apiFactory: ApiFactory, val cache: Cache) {
+class MetadataService(val apiFactory: ApiFactory, val memoryCache: BaseCache, val diskCache: BaseCache) {
 
-    fun getSpartanRanks() = async {
-        val ranks = cache.readListFromCache("spartanRanks", SpartanRank::class.java)
-        if (ranks.size != 0) {
-            ranks
+    companion object {
+        val SPARTAN_RANKS_KEY = "spartanRanks"
+        val SPARTAN_RANKS_TTL = Units.MONTH_MILLIS
+        val PLAYLISTS_KEY = "playlists"
+        val PLAYLISTS_TTL = Units.DAY_MILLIS
+        val CSR_DESIGNATIONS_KEY = "csrDesignations"
+        val CSR_DESIGNATIONS_TTL = Units.MONTH_MILLIS
+    }
+
+    private fun <E> getList(key: String, ttlMillis: Long, elementClass: Class<E>, call: Call<List<E>>) = async {
+        val memoryRanks = memoryCache.readList(key, elementClass)
+        if (memoryRanks.size != 0) {
+            Timber.i("Memory Cache Hit: $key")
+            memoryRanks
         } else {
-            val response = apiFactory.metadata.spartanRanks.execute()
-            if (!response.isSuccess) {
-                throw IllegalAccessException("Bad times: %d".format(response.code()))
+            Timber.i("Memory Cache Miss: $key")
+            val diskRanks = diskCache.readList(key, elementClass)
+            if (diskRanks.size != 0) {
+                Timber.i("Disk Cache Hit: $key")
+                memoryCache.write(diskRanks, key, ttlMillis)
+                diskRanks
+            } else {
+                Timber.i("Disk Cache Miss: $key")
+                val response = call.execute()
+                if (!response.isSuccess) {
+                    Timber.i("Network Miss: $key")
+                    listOf()
+                } else {
+                    Timber.i("Network Hit: $key")
+                    diskCache.write(response.body(), key, ttlMillis)
+                    memoryCache.write(response.body(), key, ttlMillis)
+                    response.body()
+                }
             }
-
-            cache.writeToCache(response.body(), "spartanRanks", 43800)
-            response.body()
         }
     }
+
+    fun getSpartanRanks() = getList(
+            SPARTAN_RANKS_KEY,
+            SPARTAN_RANKS_TTL,
+            SpartanRank::class.java,
+            apiFactory.metadata.spartanRanks)
 
     fun getSpartanRank(rank: Int) = getSpartanRanks() then {
         it[rank - 1]
     }
 
-    fun getGameVariant(id: String) = async {
-        val response = apiFactory.metadata.getGameVariant(id).execute()
-        if (!response.isSuccess) {
-            throw IllegalAccessException("Bad times: %d".format(response.code()))
-        }
-
-        response.body()
-    }
-
-    fun getPlaylists() = async {
-
-        val playlists = cache.readListFromCache("playlists", Playlist::class.java)
-        if (playlists.size != 0) {
-            playlists
-        } else {
-            val response = apiFactory.metadata.playlists.execute()
-            if (!response.isSuccess) {
-                throw IllegalAccessException("Bad times: %d".format(response.code()))
-            }
-            cache.writeToCache(response.body(), "playlists", 1440)
-            response.body()
-        }
-
-    }
+    fun getPlaylists() = getList(
+            PLAYLISTS_KEY,
+            PLAYLISTS_TTL,
+            Playlist::class.java,
+            apiFactory.metadata.playlists)
 
     fun getPlaylist(playlistId: String) = getPlaylists() then {
         it.find { playlistId == it.id }
     }
 
-    fun getCsrDesignations() = async {
-
-        val csrDesignations = cache.readListFromCache("csrDesignations", CSRDesignation::class.java)
-        if (csrDesignations.size != 0) {
-            csrDesignations
-        } else {
-            val response = apiFactory.metadata.csrDesignations.execute()
-            if (!response.isSuccess) {
-                throw IllegalAccessException("Bad times: %d".format(response.code()))
-            }
-            cache.writeToCache(response.body(), "csrDesignations", 43800)
-            response.body()
-        }
-
-
-    }
+    fun getCsrDesignations() = getList(
+            CSR_DESIGNATIONS_KEY,
+            CSR_DESIGNATIONS_TTL,
+            CSRDesignation::class.java,
+            apiFactory.metadata.csrDesignations)
 
     fun getCsrDesignation(id: Long) = getCsrDesignations() then {
         it.find { it.id == id }
