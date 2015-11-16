@@ -8,11 +8,22 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.exallium.h5.api.models.stats.servicerecords.*
 import com.exallium.h5statstracker.app.R
+import com.exallium.h5statstracker.app.model.Impulses
 import com.exallium.h5statstracker.app.services.MetadataService
 import com.exallium.h5statstracker.app.views.infographic.InfographicView
 import com.squareup.picasso.Picasso
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.ui.successUi
+import org.joda.time.Period
+import org.joda.time.format.PeriodFormatterBuilder
+
+internal val playtimeFormat = PeriodFormatterBuilder()
+        .appendHours()
+        .appendSuffix(":")
+        .appendMinutes()
+        .appendSuffix(":")
+        .appendSeconds()
+        .toFormatter()
 
 val getSummaryInfographicViewByType: (Int, Context, MetadataService) -> InfographicView<BaseServiceRecordResult> = {
     viewType: Int, context: Context, metadataService: MetadataService ->
@@ -22,7 +33,7 @@ val getSummaryInfographicViewByType: (Int, Context, MetadataService) -> Infograp
         HEADER_PREFIX + Section.CAMPAIGN.ordinal -> HeaderView(context, Section.CAMPAIGN)
         HEADER_PREFIX + Section.CUSTOM.ordinal -> HeaderView(context, Section.CUSTOM)
         Section.ARENA.ordinal -> ArenaStatsSummaryView(context, metadataService)
-        Section.WARZONE.ordinal -> WarzoneStatsSummaryView(context)
+        Section.WARZONE.ordinal -> WarzoneStatsSummaryView(context, metadataService)
         Section.CAMPAIGN.ordinal -> CampaignStatsSummaryView(context)
         Section.CUSTOM.ordinal -> CustomStatsSummaryView(context)
         else -> throw IllegalStateException("Unknown ViewType %d".format(viewType))
@@ -91,11 +102,45 @@ public class CampaignStatsSummaryView(context: Context) : InfographicView<BaseSe
     }
 }
 
-public class WarzoneStatsSummaryView(context: Context) : InfographicView<BaseServiceRecordResult>(context, R.layout.servicereport_warzone_summary) {
+public class WarzoneStatsSummaryView(context: Context, val metadataService: MetadataService) : InfographicView<BaseServiceRecordResult>(context, R.layout.servicereport_warzone_summary) {
     override fun render(data: BaseServiceRecordResult) {
         if (data !is WarzoneResult) {
             return
         }
+
+        val playtime = findViewById(R.id.warzone_playtime) as TextView
+        val gamesCompleted = findViewById(R.id.warzone_games_completed) as TextView
+        val coreDestructionVictories = findViewById(R.id.warzone_core_destruction_victories) as TextView
+        val basesCaptured = findViewById(R.id.warzone_bases_captured) as TextView
+        val kills = findViewById(R.id.warzone_kills) as TextView
+        val legendaryBossTakedowns = findViewById(R.id.total_legendary_boss_takedowns) as TextView
+        val standardBossTakedowns = findViewById(R.id.total_standard_boss_takedowns) as TextView
+        val bossTakedowns = findViewById(R.id.boss_takedown_count) as TextView
+
+        playtime.text = playtimeFormat.print(Period(data.warzoneStat.totalTimePlayed))
+        gamesCompleted.text = data.warzoneStat.totalGamesCompleted.toString()
+        kills.text = data.warzoneStat.totalKills.toString()
+
+        coreDestructionVictories.text = "%d".format(data.warzoneStat.impulses.find {
+            it.id == Impulses.WARZONE_CORE_DESTRUCTION_VICTORIES
+        }?.count?:0)
+
+        basesCaptured.text = "%d".format(data.warzoneStat.impulses.find {
+            it.id == Impulses.WARZONE_BASE_CAPTURED
+        }?.count?:0)
+
+        val legendKills = data.warzoneStat.impulses.find {
+            it.id == Impulses.WARZONE_LEGENDARY_TAKEDOWN
+        }?.count?:0
+
+        val standardKills = data.warzoneStat.impulses.find {
+            it.id == Impulses.WARZONE_BOSS_TAKEDOWN
+        }?.count?:0
+
+        legendaryBossTakedowns.text = "%d".format(legendKills)
+        standardBossTakedowns.text = "%d".format(standardKills)
+        bossTakedowns.text = "%d".format(legendKills + standardKills)
+
     }
 }
 

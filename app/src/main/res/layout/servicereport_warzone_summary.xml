@@ -1,7 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+              android:orientation="horizontal"
+              android:padding="16dp"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-
+    <LinearLayout android:layout_width="160dp"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+        <TextView android:layout_width="match_parent"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                  android:layout_height="wrap_content"
+                  android:text="@string/boss_takedowns"/>
+        <FrameLayout android:layout_width="160dp"
+                     android:paddingTop="16dp"
+                     android:layout_height="160dp">
+            <TextView
+                    android:id="@+id/boss_takedown_count"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </FrameLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <View android:layout_width="8dp" android:layout_height="match_parent" android:background="@color/halo_blue" />
+            <Space android:layout_width="8dp" android:layout_height="match_parent" />
+            <TextView android:layout_width="0dip"
+                      android:text="@string/legendary_boss_takedowns"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                      android:id="@+id/total_legendary_boss_takedowns" />
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <View android:layout_width="8dp" android:layout_height="match_parent" android:background="@color/halo_dark_blue" />
+            <Space android:layout_width="8dp" android:layout_height="match_parent" />
+            <TextView android:layout_width="0dip"
+                      android:text="@string/standard_boss_takedowns"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                      android:id="@+id/total_standard_boss_takedowns" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="160dp"
+                  android:layout_height="wrap_content">
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                  android:id="@+id/warzone_playtime" />
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:text="@string/playtime" />
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                  android:id="@+id/warzone_games_completed" />
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:text="@string/games_completed" />
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                  android:id="@+id/warzone_core_destruction_victories" />
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:text="@string/core_destruction_victories" />
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                  android:id="@+id/warzone_bases_captured" />
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:text="@string/bases_captured" />
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                  android:id="@+id/warzone_kills" />
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:text="@string/kills" />
+    </LinearLayout>
 </LinearLayout>

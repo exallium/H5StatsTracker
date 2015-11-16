@@ -12,6 +12,13 @@
     <string name="sr">SR</string>
     <string name="top_csr">TOP CSR</string>
     <string name="kd">K/D</string>
-    <string name="kills">Kills</string>
-    <string name="deaths">Deaths</string>
+    <string name="kills">KILLS</string>
+    <string name="deaths">DEATHS</string>
+    <string name="boss_takedowns">BOSS TAKEDOWNS</string>
+    <string name="legendary_boss_takedowns">LEGENDARY BOSS TAKEDOWNS</string>
+    <string name="standard_boss_takedowns">STANDARD BOSS TAKEDOWNS</string>
+    <string name="playtime">PLAYTIME</string>
+    <string name="games_completed">GAMES COMPLETED</string>
+    <string name="core_destruction_victories">CORE DESTRUCTION VICTORIES</string>
+    <string name="bases_captured">BASES CAPTURED</string>
 </resources>

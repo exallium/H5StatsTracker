@@ -1,0 +1,8 @@
+package com.exallium.h5statstracker.app.model
+
+object Impulses {
+    val WARZONE_LEGENDARY_TAKEDOWN = 2791655816L
+    val WARZONE_BOSS_TAKEDOWN = 3711392074L
+    val WARZONE_CORE_DESTRUCTION_VICTORIES = 2344191790L
+    val WARZONE_BASE_CAPTURED = 991142198L
+}

@@ -2,6 +2,7 @@ package com.exallium.h5statstracker.app.services
 
 import com.exallium.h5.api.ApiFactory
 import com.exallium.h5.api.models.metadata.CSRDesignation
+import com.exallium.h5.api.models.metadata.Impulse
 import com.exallium.h5.api.models.metadata.Playlist
 import com.exallium.h5.api.models.metadata.SpartanRank
 import com.exallium.h5statstracker.app.Units
@@ -20,6 +21,8 @@ class MetadataService(val apiFactory: ApiFactory, val memoryCache: BaseCache, va
         val PLAYLISTS_TTL = Units.DAY_MILLIS
         val CSR_DESIGNATIONS_KEY = "csrDesignations"
         val CSR_DESIGNATIONS_TTL = Units.MONTH_MILLIS
+        val IMPULSES_KEY = "impulses"
+        val IMPULSES_TTL = Units.MONTH_MILLIS
     }
 
     private fun <E> getList(key: String, ttlMillis: Long, elementClass: Class<E>, call: Call<List<E>>) = async {
@@ -77,6 +80,16 @@ class MetadataService(val apiFactory: ApiFactory, val memoryCache: BaseCache, va
             apiFactory.metadata.csrDesignations)
 
     fun getCsrDesignation(id: Long) = getCsrDesignations() then {
+        it.find { it.id == id }
+    }
+
+    fun getImpulses() = getList(
+            IMPULSES_KEY,
+            IMPULSES_TTL,
+            Impulse::class.java,
+            apiFactory.metadata.impulses)
+
+    fun getImpulse(id: Long) = getImpulses() then {
         it.find { it.id == id }
     }
 }
