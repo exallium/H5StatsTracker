@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:custom="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
-              android:padding="16dp"
-              android:layout_width="match_parent"
+              android:layout_gravity="center_horizontal"
+              android:layout_width="@dimen/service_report_width"
               android:layout_height="match_parent">
     <TextView
             android:layout_width="match_parent"
@@ -22,12 +23,14 @@
               android:layout_height="wrap_content"
               android:textAppearance="@style/TextAppearance.AppCompat.Body2"
               android:id="@+id/xp_progress_text" />
-    <LinearLayout
+    <GridLayout
             android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:columnCount="@integer/service_report_column_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <LinearLayout android:orientation="vertical"
-                      android:layout_width="wrap_content"
+                      android:layout_width="@dimen/service_report_column_width"
                       android:layout_height="wrap_content">
             <TextView android:id="@+id/top_variant_name"
                       android:textAppearance="@style/TextAppearance.AppCompat.Title"
@@ -37,16 +40,33 @@
                       android:layout_height="wrap_content"
                       android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                       android:text="@string/top_csr" />
-            <!-- TODO: Use metrics circle -->
-            <ImageView android:layout_width="160dp"
-                       android:layout_height="160dp"
-                       android:paddingTop="16dp"
-                       android:id="@+id/csr_image" />
+            <RelativeLayout android:layout_width="@dimen/service_report_column_width"
+                            android:layout_height="@dimen/service_report_column_width">
+                <com.github.lzyzsd.circleprogress.DonutProgress
+                        android:id="@+id/arena_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        custom:donut_progress="0"
+                        custom:donut_text_size="0dip"
+                        custom:donut_text_color="@android:color/black"
+                        custom:donut_finished_color="@color/halo_blue"
+                        custom:donut_unfinished_color="@color/halo_lt_grey" />
+                <ImageView android:layout_width="@dimen/arena_csr_icon_height"
+                           android:layout_height="@dimen/arena_csr_icon_height"
+                           android:layout_centerInParent="true"
+                           android:paddingTop="16dp"
+                           android:id="@+id/csr_image" />
+                <TextView android:id="@+id/csr_title"
+                          android:gravity="center_horizontal"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                          android:layout_below="@id/csr_image" />
+            </RelativeLayout>
         </LinearLayout>
+        <Space android:layout_width="16dp" android:layout_height="16dp" />
         <LinearLayout android:orientation="vertical"
-                      android:layout_weight="1"
-                      android:layout_width="0dip"
-                      android:paddingLeft="16dp"
+                      android:layout_width="@dimen/service_report_column_width"
                       android:layout_height="wrap_content">
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
@@ -86,5 +106,5 @@
                           android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </GridLayout>
 </LinearLayout>

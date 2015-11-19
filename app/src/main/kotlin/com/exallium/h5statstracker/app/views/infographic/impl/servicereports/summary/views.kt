@@ -1,7 +1,6 @@
 package com.exallium.h5statstracker.app.views.infographic.impl.servicereports.summary
 
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -11,6 +10,7 @@ import com.exallium.h5statstracker.app.R
 import com.exallium.h5statstracker.app.model.Impulses
 import com.exallium.h5statstracker.app.services.MetadataService
 import com.exallium.h5statstracker.app.views.infographic.InfographicView
+import com.github.lzyzsd.circleprogress.DonutProgress
 import com.squareup.picasso.Picasso
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.ui.successUi
@@ -75,16 +75,29 @@ public class ArenaStatsSummaryView(context: Context, val metadataService: Metada
             (findViewById(R.id.xp_progress_text) as TextView).text = "%d / %d".format(progress, delta)
         }
 
-        metadataService.getPlaylist(data.arenaStat.highestCsrPlaylistId) successUi {
-            (findViewById(R.id.top_variant_name) as TextView).text = it?.name
+        if (data.arenaStat.highestCsrAttained != null) {
+            metadataService.getPlaylist(data.arenaStat.highestCsrPlaylistId) successUi {
+                (findViewById(R.id.top_variant_name) as TextView).text = it?.name
+            }
+
+            metadataService.getCsrDesignation(data.arenaStat.highestCsrAttained.designationId.toLong()) successUi {
+                val tier = it?.tiers?.find { it.id == data.arenaStat.highestCsrAttained.tier.toLong() }
+                val name = it?.name?:""
+                tier?.let {
+                    Picasso.with(context).load(tier.iconImageUrl).into((findViewById(R.id.csr_image) as ImageView))
+                    (findViewById(R.id.csr_title) as TextView).text = "%s %d".format(name, it.id)
+                }
+            }
+
+            (findViewById(R.id.arena_progress) as DonutProgress).progress = data.arenaStat.highestCsrAttained.percentToNextTier
+        } else {
+            (findViewById(R.id.arena_progress) as DonutProgress).progress = (data.arenaStat.topGameBaseVariants.minBy {
+                it.gameBaseVariantRank
+            }?.numberOfMatchesCompleted?.toInt()?:0) * 10
         }
 
-        metadataService.getCsrDesignation(data.arenaStat.highestCsrAttained.designationId.toLong()) successUi {
-            val tier = it?.tiers?.find { it.id == data.arenaStat.highestCsrAttained.tier.toLong() }
-            tier?.let {
-                Picasso.with(context).load(tier.iconImageUrl).into((findViewById(R.id.csr_image) as ImageView))
-            }
-        }
+
+
 
         val totalKills = data.arenaStat.totalKills
         val totalDeaths = data.arenaStat.totalDeaths
