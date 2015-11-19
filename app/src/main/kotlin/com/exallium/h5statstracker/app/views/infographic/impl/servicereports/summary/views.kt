@@ -35,7 +35,7 @@ val getSummaryInfographicViewByType: (Int, Context, MetadataService) -> Infograp
         HEADER_PREFIX + Section.CAMPAIGN.ordinal -> HeaderView(context, Section.CAMPAIGN)
         HEADER_PREFIX + Section.CUSTOM.ordinal -> HeaderView(context, Section.CUSTOM)
         Section.ARENA.ordinal -> ArenaStatsSummaryView(context, metadataService)
-        Section.WARZONE.ordinal -> WarzoneStatsSummaryView(context, metadataService)
+        Section.WARZONE.ordinal -> WarzoneStatsSummaryView(context)
         Section.CAMPAIGN.ordinal -> CampaignStatsSummaryView(context)
         Section.CUSTOM.ordinal -> CustomStatsSummaryView(context)
         else -> throw IllegalStateException("Unknown ViewType %d".format(viewType))
@@ -121,7 +121,7 @@ public class CampaignStatsSummaryView(context: Context) : InfographicView<BaseSe
     }
 }
 
-public class WarzoneStatsSummaryView(context: Context, val metadataService: MetadataService) : InfographicView<BaseServiceRecordResult>(context, R.layout.servicereport_warzone_summary) {
+public class WarzoneStatsSummaryView(context: Context) : InfographicView<BaseServiceRecordResult>(context, R.layout.servicereport_warzone_summary) {
     override fun render(data: BaseServiceRecordResult) {
         if (data !is WarzoneResult) {
             return
