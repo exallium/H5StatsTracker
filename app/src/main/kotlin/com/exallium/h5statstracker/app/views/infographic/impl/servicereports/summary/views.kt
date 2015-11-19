@@ -160,6 +160,13 @@ public class WarzoneStatsSummaryView(context: Context, val metadataService: Meta
         standardBossTakedowns.text = "%d".format(standardKills)
         bossTakedowns.text = "%d".format(legendKills + standardKills)
 
+        if (legendKills != 0) {
+            val legendKillPercentage = ((legendKills.toFloat() / (legendKills.toFloat() + standardKills.toFloat())) * 100).toInt()
+            val legendProgress = findViewById(R.id.boss_takedown_progress) as DonutProgress
+            val anim = ObjectAnimator.ofInt(legendProgress, "progress", legendKillPercentage)
+            anim.setDuration(DURATION_PER_PERCENT * legendKillPercentage)
+            anim.start()
+        }
     }
 }
 
