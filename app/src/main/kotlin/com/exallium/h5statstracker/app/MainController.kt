@@ -67,7 +67,7 @@ public class MainController(val context: Context) {
 
     fun logOut() {
         context.getSharedPreferences(Constants.PREFERENCES, Constants.PREFERENCE_MODE)
-            .edit().remove(Constants.GAMERTAG)
+            .edit().remove(Constants.GAMERTAG).apply()
         gamertagSubject.onNext("")
         Router.replaceTo(Router.Request(Router.Route.GAMERTAG))
     }

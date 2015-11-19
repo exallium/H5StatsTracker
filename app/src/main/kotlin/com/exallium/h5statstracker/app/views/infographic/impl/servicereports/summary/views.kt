@@ -17,6 +17,8 @@ import nl.komponents.kovenant.ui.successUi
 import org.joda.time.Period
 import org.joda.time.format.PeriodFormatterBuilder
 
+internal val DURATION_PER_PERCENT = 8L
+
 internal val playtimeFormat = PeriodFormatterBuilder()
         .appendHours()
         .appendSuffix(":")
@@ -69,7 +71,7 @@ public class ArenaStatsSummaryView(context: Context, val metadataService: Metada
             val progressBar = (findViewById(R.id.xp_progress_bar) as ProgressBar)
             val progressBarEndValue = Math.round((progress.toFloat() / delta.toFloat()) * 100)
             val anim = ObjectAnimator.ofInt(progressBar, "progress", progressBarEndValue)
-            anim.setDuration(750)
+            anim.setDuration(DURATION_PER_PERCENT * progressBarEndValue)
             anim.start()
 
             (findViewById(R.id.xp_progress_text) as TextView).text = "%d / %d".format(progress, delta)
@@ -89,7 +91,11 @@ public class ArenaStatsSummaryView(context: Context, val metadataService: Metada
                 }
             }
 
-            (findViewById(R.id.arena_progress) as DonutProgress).progress = data.arenaStat.highestCsrAttained.percentToNextTier
+            val progressBar = findViewById(R.id.arena_progress) as DonutProgress
+            val arenaProgress = data.arenaStat.highestCsrAttained.percentToNextTier
+            val anim = ObjectAnimator.ofInt(progressBar, "progress", arenaProgress)
+            anim.setDuration(DURATION_PER_PERCENT * arenaProgress.toLong())
+            anim.start()
         } else {
             (findViewById(R.id.arena_progress) as DonutProgress).progress = (data.arenaStat.topGameBaseVariants.minBy {
                 it.gameBaseVariantRank

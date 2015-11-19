@@ -5,7 +5,7 @@
 
     <string name="service_record">Stats Summary</string>
     <string name="arena_service_record_title">Arena Service Record for {h5.bundle.GAMERTAG}</string>
-    <string name="gamertag_title">Setup</string>
+    <string name="gamertag_title">Log In</string>
     <string name="gamertag_input_error">Invalid Gamertag</string>
     <string name="gamertag_not_logged_in">Not Logged In</string>
 

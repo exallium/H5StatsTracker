@@ -3,12 +3,15 @@ package com.exallium.h5statstracker.app
 import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 
 import kotlinx.android.synthetic.base.contentFrame
 import kotlinx.android.synthetic.toolbar.toolbar_title
+import kotlinx.android.synthetic.base.drawer
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 
@@ -16,6 +19,7 @@ class MainActivity : AppCompatActivity(), Router.Listener {
 
     override fun goToScreen(request: Router.Request) {
         hideSoftKeyboard()
+        handleDrawerState(request.route)
         navController.onRouteRequest(request)
 
         val view = getRouterView(request, this, mainController)
@@ -64,6 +68,15 @@ class MainActivity : AppCompatActivity(), Router.Listener {
            focus = View(this)
         }
         inputMethodManager.hideSoftInputFromWindow(focus.windowToken, 0)
+    }
+
+    private fun handleDrawerState(route: Router.Route) {
+        drawer.closeDrawer(Gravity.LEFT)
+        drawer.setDrawerLockMode(if (route == Router.Route.GAMERTAG) {
+            DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+        } else {
+            DrawerLayout.LOCK_MODE_UNLOCKED
+        })
     }
 
 }

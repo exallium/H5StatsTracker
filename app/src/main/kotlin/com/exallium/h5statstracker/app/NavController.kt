@@ -54,7 +54,7 @@ public class NavController(val mainController: MainController, val navView: Navi
     public fun onRouteRequest(request: Router.Request) {
         navView.setCheckedItem(request.route.navId)
     }
-    
+
     private fun logOut(): Boolean {
         mainController.logOut()
         return true

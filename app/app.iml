@@ -149,8 +149,8 @@
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.3" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="vtd-xml-2.11" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
-    <orderEntry type="library" exported="" name="rxkotlin-0.24.100" level="project" />
     <orderEntry type="library" exported="" name="kotlin-stdlib-1.0.0-beta-1103" level="project" />
+    <orderEntry type="library" exported="" name="rxkotlin-0.24.100" level="project" />
     <orderEntry type="library" exported="" name="timber-4.1.0" level="project" />
   </component>
 </module>
