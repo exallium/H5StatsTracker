@@ -21,10 +21,10 @@ public object Router : Flow.Listener {
 
     public data class Request(val route: Route, val bundle: Bundle = Bundle())
 
-    public enum class Route(val titleId: Int) {
-        SERVICE_RECORD_SUMMARY(R.string.service_record),
-        ARENA_SERVICE_RECORD(R.string.arena_service_record_title),
-        GAMERTAG(R.string.gamertag_title)
+    public enum class Route(val titleId: Int, val navId: Int) {
+        SERVICE_RECORD_SUMMARY(R.string.service_record, R.id.service_record),
+        ARENA_SERVICE_RECORD(R.string.arena_service_record_title, R.id.service_record),
+        GAMERTAG(R.string.gamertag_title, R.id.log_out)
     }
 
     private val bundle = Bundle()
@@ -37,7 +37,10 @@ public object Router : Flow.Listener {
     }
 
     public fun onRequest(request: Request) {
-        flow.goTo(request)
+        val currentScreen = backstack.current().screen as Request
+        if (request != currentScreen) {
+            flow.goTo(request)
+        }
     }
 
     public fun goBack(): Boolean {

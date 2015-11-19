@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:background="@color/halo_dark_blue"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="190dp">
+    <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/spartan_image"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="24dp"
+            app:civ_border_width="2dp"
+            app:civ_fill_color="@color/halo_lt_grey"
+            app:civ_border_color="@color/halo_lt_grey"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@android:color/white"
+              android:id="@+id/gamertag"
+              android:layout_marginTop="16dp"
+              android:layout_below="@id/spartan_image"
+              android:layout_alignLeft="@id/spartan_image"
+              android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+</RelativeLayout>

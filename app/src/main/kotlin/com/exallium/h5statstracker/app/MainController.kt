@@ -6,7 +6,9 @@ import com.exallium.h5.api.ApiFactory
 import com.exallium.h5statstracker.app.model.DiskCache
 import com.exallium.h5statstracker.app.model.MemoryCache
 import com.exallium.h5statstracker.app.services.MetadataService
+import com.exallium.h5statstracker.app.services.ProfileService
 import com.exallium.h5statstracker.app.services.StatsService
+import rx.lang.kotlin.BehaviourSubject
 import timber.log.Timber
 
 public class MainController(val context: Context) {
@@ -16,6 +18,8 @@ public class MainController(val context: Context) {
     val apiFactory = ApiFactory(context.resources.getString(R.string.api_key))
     val statsService = StatsService(this)
     val metadataService = MetadataService(apiFactory, memoryCache, diskCache)
+    val profileService = ProfileService(apiFactory.profile)
+    val gamertagSubject = BehaviourSubject<String>()
 
     init {
         if (BuildConfig.DEBUG) {
@@ -31,6 +35,7 @@ public class MainController(val context: Context) {
         val gamerTag = getGamertag()
 
         if (gamerTag != null) {
+            gamertagSubject.onNext(gamerTag)
             val bundle = Bundle()
             bundle.putString(Constants.GAMERTAG, gamerTag)
             Router.replaceTo(Router.Request(Router.Route.SERVICE_RECORD_SUMMARY))
@@ -58,6 +63,13 @@ public class MainController(val context: Context) {
         }
 
         return prepBundle;
+    }
+
+    fun logOut() {
+        context.getSharedPreferences(Constants.PREFERENCES, Constants.PREFERENCE_MODE)
+            .edit().remove(Constants.GAMERTAG)
+        gamertagSubject.onNext("")
+        Router.replaceTo(Router.Request(Router.Route.GAMERTAG))
     }
 
 }

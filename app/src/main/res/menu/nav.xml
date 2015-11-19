@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <group>
+        <item android:id="@+id/service_record" android:title="@string/service_record" android:icon="@drawable/ic_assessment_black_24dp" />
+    </group>
+    <group>
+        <item android:id="@+id/log_out" android:title="@string/log_out" android:icon="@drawable/ic_power_settings_new_black_24dp" />
+        <item android:id="@+id/settings" android:title="@string/settings" android:icon="@drawable/ic_settings_black_24dp" />
+    </group>
 </menu>

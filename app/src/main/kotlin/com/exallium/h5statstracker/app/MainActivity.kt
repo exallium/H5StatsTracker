@@ -2,6 +2,7 @@ package com.exallium.h5statstracker.app
 
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.NavigationView
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity(), Router.Listener {
 
     override fun goToScreen(request: Router.Request) {
         hideSoftKeyboard()
+        navController.onRouteRequest(request)
 
         val view = getRouterView(request, this, mainController)
         contentFrame.removeAllViews()
@@ -25,12 +27,17 @@ class MainActivity : AppCompatActivity(), Router.Listener {
     }
 
     lateinit var mainController: MainController
+    lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startKovenant()
         setContentView(R.layout.base)
         mainController = MainController(applicationContext)
+
+        val navView = findViewById(R.id.nav) as NavigationView
+        navController = NavController(mainController, navView)
+
         Router.onCreate(this)
     }
 
