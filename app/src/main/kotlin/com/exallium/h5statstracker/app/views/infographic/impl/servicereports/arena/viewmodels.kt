@@ -1,21 +1,21 @@
 package com.exallium.h5statstracker.app.views.infographic.impl.servicereports.arena
 
-import android.os.Bundle
 import com.exallium.h5.api.models.stats.servicerecords.ArenaResult
-import com.exallium.h5statstracker.app.MainController
-import com.exallium.h5statstracker.app.views.infographic.InfographicDataFactory
+import com.exallium.h5.api.models.stats.servicerecords.BaseServiceRecordResult
 import com.exallium.h5statstracker.app.views.infographic.InfographicViewModel
-import com.exallium.h5statstracker.app.views.infographic.SimpleViewModel
 
-public class ArenaServiceRecordDataFactory(val mainController: MainController, val bundle: Bundle?) : InfographicDataFactory<ArenaResult> {
-    override fun getViewModels(fn: (List<InfographicViewModel<ArenaResult>>) -> Unit) {
+internal val SERVICE_RECORD_ARENA_PREFIX = 2000
+enum class ArenaServiceRecord {
+    TOP_CSR, TOP_CSR_CONDENSED;
 
-        val promise = mainController.statsService.onRequestArenaServiceRecord(bundle)
-        promise.success { it?.let { fn(listOf(HeaderViewModel(it))) } }
+    fun getViewType(): Int {
+        return ordinal + SERVICE_RECORD_ARENA_PREFIX
     }
-
 }
 
-public class HeaderViewModel(t: ArenaResult) : SimpleViewModel<ArenaResult>(t) {
-    override fun getViewType() = 0
+class ArenaViewModel(val list: List<BaseServiceRecordResult>, val record: ArenaServiceRecord) : InfographicViewModel<List<BaseServiceRecordResult>> {
+    override fun getViewType() = record.getViewType()
+
+    override fun getData() = list.filterIsInstance(ArenaResult::class.java)
+
 }

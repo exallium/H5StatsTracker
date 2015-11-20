@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="service_report_column_count">3</integer>
-    <dimen name="service_report_width">480dp</dimen>
+    <integer name="service_record_column_count">3</integer>
+    <dimen name="service_record_width">480dp</dimen>
 
     <!-- Half the width, -16dp for space between -->
-    <dimen name="service_report_column_width">232dp</dimen>
+    <dimen name="service_record_column_width">232dp</dimen>
 </resources>

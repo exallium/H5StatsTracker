@@ -3,7 +3,7 @@
               xmlns:custom="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_gravity="center_horizontal"
-              android:layout_width="@dimen/service_report_width"
+              android:layout_width="@dimen/service_record_width"
               android:layout_height="match_parent">
     <TextView
             android:layout_width="match_parent"
@@ -26,11 +26,11 @@
     <GridLayout
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
-            android:columnCount="@integer/service_report_column_count"
+            android:columnCount="@integer/service_record_column_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <LinearLayout android:orientation="vertical"
-                      android:layout_width="@dimen/service_report_column_width"
+                      android:layout_width="@dimen/service_record_column_width"
                       android:layout_height="wrap_content">
             <TextView android:id="@+id/top_variant_name"
                       android:textAppearance="@style/TextAppearance.AppCompat.Title"
@@ -40,8 +40,8 @@
                       android:layout_height="wrap_content"
                       android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                       android:text="@string/top_csr" />
-            <RelativeLayout android:layout_width="@dimen/service_report_column_width"
-                            android:layout_height="@dimen/service_report_column_width">
+            <RelativeLayout android:layout_width="@dimen/service_record_column_width"
+                            android:layout_height="@dimen/service_record_column_width">
                 <com.github.lzyzsd.circleprogress.DonutProgress
                         android:id="@+id/arena_progress"
                         android:layout_width="match_parent"
@@ -66,7 +66,7 @@
         </LinearLayout>
         <Space android:layout_width="16dp" android:layout_height="16dp" />
         <LinearLayout android:orientation="vertical"
-                      android:layout_width="@dimen/service_report_column_width"
+                      android:layout_width="@dimen/service_record_column_width"
                       android:layout_height="wrap_content">
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"

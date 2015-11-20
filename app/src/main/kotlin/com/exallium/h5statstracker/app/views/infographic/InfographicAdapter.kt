@@ -3,12 +3,13 @@ package com.exallium.h5statstracker.app.views.infographic
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import com.exallium.h5statstracker.app.MainController
 import com.exallium.h5statstracker.app.services.MetadataService
 import java.util.*
 
-public class InfographicAdapter<T>(val viewFactory: (Int, Context, MetadataService) -> InfographicView<T>,
+public class InfographicAdapter<T>(val viewFactory: (Int, Context, MainController) -> InfographicView<T>,
                                    val dataFactory: InfographicDataFactory<T>,
-                                   val metadataService: MetadataService)
+                                   val mainController: MainController)
     : RecyclerView.Adapter<InfographicAdapter.InfographicViewHolder>() {
 
     init {
@@ -20,7 +21,7 @@ public class InfographicAdapter<T>(val viewFactory: (Int, Context, MetadataServi
 
     private val viewModels = ArrayList<InfographicViewModel<T>>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfographicViewHolder = InfographicViewHolder(viewFactory(viewType, parent.context, metadataService))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfographicViewHolder = InfographicViewHolder(viewFactory(viewType, parent.context, mainController))
 
     override fun getItemCount(): Int = viewModels.size
 

@@ -2,19 +2,19 @@
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:layout_gravity="center_horizontal"
-            android:columnCount="@integer/service_report_column_count"
-            android:layout_width="@dimen/service_report_width"
+            android:columnCount="@integer/service_record_column_count"
+            android:layout_width="@dimen/service_record_width"
             android:layout_height="match_parent">
-    <LinearLayout android:layout_width="@dimen/service_report_column_width"
+    <LinearLayout android:layout_width="@dimen/service_record_column_width"
                   android:layout_height="wrap_content"
                   android:orientation="vertical">
         <TextView android:layout_width="match_parent"
                   android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                   android:layout_height="wrap_content"
                   android:text="@string/boss_takedowns"/>
-        <FrameLayout android:layout_width="@dimen/service_report_column_width"
+        <FrameLayout android:layout_width="@dimen/service_record_column_width"
                      android:paddingTop="16dp"
-                     android:layout_height="@dimen/service_report_column_width">
+                     android:layout_height="@dimen/service_record_column_width">
             <com.github.lzyzsd.circleprogress.DonutProgress
                     android:id="@+id/boss_takedown_progress"
                     android:layout_width="match_parent"
@@ -60,7 +60,7 @@
     </LinearLayout>
     <Space android:layout_height="16dp" android:layout_width="16dp" />
     <LinearLayout android:orientation="vertical"
-                  android:layout_width="@dimen/service_report_column_width"
+                  android:layout_width="@dimen/service_record_column_width"
                   android:layout_height="wrap_content">
         <TextView android:layout_width="match_parent"
                   android:layout_height="wrap_content"

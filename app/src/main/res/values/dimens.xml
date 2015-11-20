@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="service_report_column_count">1</integer>
-    <dimen name="service_report_width">320dp</dimen>
-    <dimen name="service_report_column_width">320dp</dimen>
+    <integer name="service_record_column_count">1</integer>
+    <dimen name="service_record_width">320dp</dimen>
+    <dimen name="service_record_column_width">320dp</dimen>
     <dimen name="arena_csr_icon_height">160dp</dimen>
 </resources>

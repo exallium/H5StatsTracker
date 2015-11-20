@@ -19,7 +19,7 @@ import org.joda.time.format.PeriodFormatterBuilder
 
 internal val DURATION_PER_PERCENT = 8L
 
-internal val playtimeFormat = PeriodFormatterBuilder()
+internal val PLAYTIME_FORMATTER = PeriodFormatterBuilder()
         .appendHours()
         .appendSuffix(":")
         .appendMinutes()
@@ -136,7 +136,7 @@ public class WarzoneStatsSummaryView(context: Context) : InfographicView<BaseSer
         val standardBossTakedowns = findViewById(R.id.total_standard_boss_takedowns) as TextView
         val bossTakedowns = findViewById(R.id.boss_takedown_count) as TextView
 
-        playtime.text = playtimeFormat.print(Period(data.warzoneStat.totalTimePlayed))
+        playtime.text = PLAYTIME_FORMATTER.print(Period(data.warzoneStat.totalTimePlayed))
         gamesCompleted.text = data.warzoneStat.totalGamesCompleted.toString()
         kills.text = data.warzoneStat.totalKills.toString()
 

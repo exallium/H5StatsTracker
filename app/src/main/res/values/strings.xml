@@ -25,4 +25,13 @@
     <string name="games_completed">GAMES COMPLETED</string>
     <string name="core_destruction_victories">CORE DESTRUCTION VICTORIES</string>
     <string name="bases_captured">BASES CAPTURED</string>
+    <string name="last_games">LAST %d GAMES</string>
+    <string name="total_wins">TOTAL WINS</string>
+    <string name="total_losses">TOTAL LOSSES</string>
+    <string name="win_percentage">WIN PERCENTAGE</string>
+
+    <string name="multiplayer_playtime">MULTIPLAYER PLAYTIME</string>
+    <string name="multiplayer_games_completed">MULTIPLAYER GAMES COMPLETED</string>
+    <string name="multiplayer_kd">MULTIPLAYER K/D</string>
+    <string name="multiplayer_win_percentage">MULTIPLAYER WIN PERCENTAGE</string>
 </resources>

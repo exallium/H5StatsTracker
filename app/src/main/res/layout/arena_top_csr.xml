@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+              android:layout_gravity="center_horizontal"
+              android:layout_width="@dimen/service_record_column_width"
+              android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:custom="http://schemas.android.com/apk/res-auto">
+    <TextView android:id="@+id/top_variant_name"
+              android:textAppearance="@style/TextAppearance.AppCompat.Title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" />
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+              android:text="@string/top_csr" />
+    <RelativeLayout android:layout_width="@dimen/service_record_column_width"
+                    android:layout_height="@dimen/service_record_column_width">
+        <com.github.lzyzsd.circleprogress.DonutProgress
+                android:id="@+id/arena_progress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                custom:donut_progress="0"
+                custom:donut_text_size="0dip"
+                custom:donut_text_color="@android:color/black"
+                custom:donut_finished_color="@color/halo_blue"
+                custom:donut_unfinished_color="@color/halo_lt_grey" />
+        <ImageView android:layout_width="@dimen/arena_csr_icon_height"
+                   android:layout_height="@dimen/arena_csr_icon_height"
+                   android:layout_centerInParent="true"
+                   android:paddingTop="16dp"
+                   android:id="@+id/csr_image" />
+        <TextView android:id="@+id/csr_title"
+                  android:gravity="center_horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:layout_below="@id/csr_image" />
+    </RelativeLayout>
+</LinearLayout>

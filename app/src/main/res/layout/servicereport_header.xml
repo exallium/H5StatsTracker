@@ -3,6 +3,6 @@
               android:layout_gravity="center_horizontal"
               android:id="@+id/header_title"
               android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-              android:layout_width="@dimen/service_report_width"
+              android:layout_width="@dimen/service_record_width"
               android:layout_height="wrap_content">
 </TextView>
