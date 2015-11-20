@@ -1,7 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="match_parent"
+              android:layout_gravity="center_horizontal"
+              android:layout_width="@dimen/service_record_column_width"
               android:layout_height="match_parent">
-
+    <TextView android:id="@+id/last_games"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
+    <LinearLayout android:orientation="horizontal"
+                  android:id="@+id/win_container"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content" />
+    <LinearLayout android:orientation="horizontal"
+                  android:id="@+id/loss_container"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content" />
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <View android:layout_width="8dp" android:layout_height="match_parent" android:background="@color/halo_blue"/>
+        <Space android:layout_width="8dp" android:layout_height="match_parent"/>
+        <TextView android:layout_width="0dip"
+                  android:text="@string/total_wins"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"/>
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:id="@+id/total_wins"/>
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
+                  android:paddingTop="4dp"
+                  android:layout_height="wrap_content">
+        <View android:layout_width="8dp" android:layout_height="match_parent"
+              android:background="@color/halo_dark_orange"/>
+        <Space android:layout_width="8dp" android:layout_height="match_parent"/>
+        <TextView android:layout_width="0dip"
+                  android:text="@string/total_losses"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"/>
+        <TextView android:id="@+id/total_losses"
+                  android:layout_width="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:layout_height="wrap_content"/>
+    </LinearLayout>
 </LinearLayout>

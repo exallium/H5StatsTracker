@@ -2,6 +2,10 @@ package com.exallium.h5statstracker.app.views.infographic.impl.servicereports.mu
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.exallium.h5.api.models.stats.common.BaseStats
@@ -9,6 +13,7 @@ import com.exallium.h5.api.models.stats.servicerecords.ArenaResult
 import com.exallium.h5.api.models.stats.servicerecords.BaseServiceRecordResult
 import com.exallium.h5.api.models.stats.servicerecords.CustomResult
 import com.exallium.h5.api.models.stats.servicerecords.WarzoneResult
+import com.exallium.h5statstracker.app.Constants
 import com.exallium.h5statstracker.app.MainController
 import com.exallium.h5statstracker.app.R
 import com.exallium.h5statstracker.app.services.MetadataService
@@ -19,8 +24,6 @@ import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.sum
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.summary.PLAYTIME_FORMATTER
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.ui.successUi
-import org.joda.time.DateTime
-import org.joda.time.LocalDateTime
 import org.joda.time.Period
 
 internal val MAX_GAME_HISTORY = 20
@@ -32,6 +35,7 @@ val getMultiplayerViewByType = { viewType: Int, context: Context, mainController
         MultiplayerServiceRecord.GAMES_COMPLETED.getViewType() -> GamesCompletedView(context)
         MultiplayerServiceRecord.WIN_PERCENTAGE.getViewType() -> WinPercentageView(context)
         MultiplayerServiceRecord.KILL_DEATH_RATIO.getViewType() -> KillDeathRatioView(context)
+        MultiplayerServiceRecord.MATCH_HISTORY.getViewType() -> MatchResultsView(context, mainController.statsService)
         else -> throw IllegalArgumentException("Unknown View %d".format(viewType))
     }
 }
@@ -135,9 +139,51 @@ class KillDeathRatioView(context: Context) : InfographicView<List<BaseServiceRec
     }
 }
 
-class MatchResultsView(context: Context, statsService: StatsService) : InfographicView<List<BaseServiceRecordResult>>(context, R.layout.multiplayer_match_results) {
+class MatchResultsView(context: Context, val statsService: StatsService) : InfographicView<List<BaseServiceRecordResult>>(context, R.layout.multiplayer_match_results) {
+
     override fun render(data: List<BaseServiceRecordResult>) {
-        throw UnsupportedOperationException()
+        if (data.isEmpty()) {
+            return
+        }
+
+        val player = data.first().player.gamertag
+        val bundle = Bundle()
+        bundle.putString(Constants.GAMERTAG, player)
+        bundle.putInt(Constants.COUNT, MAX_GAME_HISTORY)
+
+        statsService.onRequestMatchHistory(bundle) successUi {
+
+            val lastGames = findViewById(R.id.last_games) as TextView
+            // filter out all games player didn't finish
+            val playerResults = it.map {
+                val p = it.players.find { it.player.gamertag == player }
+                p?.result?:0
+            } .filter { it != 0 }
+
+            lastGames.text = context.resources.getString(R.string.last_games, playerResults.size)
+
+            val wins = findViewById(R.id.win_container) as ViewGroup
+            val losses = findViewById(R.id.loss_container) as ViewGroup
+
+            playerResults.forEach {
+                wins.addView(createSegment(it, 3))
+                losses.addView(createSegment(it, 1))
+            }
+        }
+
+    }
+
+    private fun createSegment(result: Int, expected: Int): View {
+        val view = LayoutInflater.from(context).inflate(R.layout.segment, null)
+        if (result != expected) {
+            return view
+        } else if (result == 1) {
+            view.setBackgroundResource(R.drawable.segment_loss)
+        } else {
+            view.setBackgroundResource(R.drawable.segment_win)
+        }
+
+        return view
     }
 
 }

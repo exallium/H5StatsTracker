@@ -1,6 +1,7 @@
 package com.exallium.h5statstracker.app.services
 
 import android.os.Bundle
+import com.exallium.h5.api.models.stats.matches.Match
 import com.exallium.h5.api.models.stats.servicerecords.*
 import com.exallium.h5statstracker.app.Constants
 import com.exallium.h5statstracker.app.MainController
@@ -18,6 +19,41 @@ class StatsService(val mainController: MainController) {
         val CAMPAIGN_RESULT_KEY = "campaignResult"
         val CUSTOM_RESULT_KEY = "customResult"
         val RESULT_TTL = Units.MINUTE_MILLIS * 5
+
+        val MATCHES_KEY = "matches"
+        val MATCHES_TTL = Units.MINUTE_MILLIS * 10
+        val MATCHES_DEFAULT_START_OFFSET = 0
+        val MATCHES_DEFAULT_COUNT = 20
+        val MATCHES_DEFAULT_GAMEMODES = listOf("arena", "warzone", "custom")
+    }
+
+    fun onRequestMatchHistory(bundle: Bundle?) = async {
+        val gamertag = getGamertag(bundle)
+        val startOffset = bundle?.getInt(Constants.START_OFFSET)?:MATCHES_DEFAULT_START_OFFSET
+        val count = bundle?.getInt(Constants.COUNT)?:MATCHES_DEFAULT_COUNT
+        val gameModes = bundle?.getStringArrayList(Constants.GAME_MODES)?:MATCHES_DEFAULT_GAMEMODES
+        val cacheKey = "%s-%s-%d-%d-%s".format(MATCHES_KEY, gamertag, startOffset, count, gameModes.joinToString("-"))
+
+        val memResult = mainController.memoryCache.readList(cacheKey, Match::class.java)
+        if (memResult.isNotEmpty()) {
+            memResult
+        } else {
+            val diskResult = mainController.diskCache.readList(cacheKey, Match::class.java)
+            if (diskResult.isNotEmpty()) {
+                mainController.memoryCache.write(diskResult, cacheKey, MATCHES_TTL)
+                diskResult
+            } else {
+                val response = mainController.apiFactory.stats.getRecentMatchInfo(gamertag, gameModes, startOffset, count).execute()
+                if (response.isSuccess && response.body().resultCount != 0) {
+                    val matches = response.body().results
+                    mainController.diskCache.write(matches, cacheKey, MATCHES_TTL)
+                    mainController.memoryCache.write(matches, cacheKey, MATCHES_TTL)
+                    matches
+                } else {
+                    listOf()
+                }
+            }
+        }
     }
 
     fun onRequestArenaServiceRecord(bundle: Bundle?): Promise<ArenaResult?, Exception> {
@@ -40,16 +76,18 @@ class StatsService(val mainController: MainController) {
                 WarzoneResult::class.java, { mainController.apiFactory.stats.getWarzoneServiceRecords(it) })
     }
 
+    private fun getGamertag(bundle: Bundle?) = if (bundle?.containsKey(Constants.GAMERTAG)?:false) {
+        bundle?.getString(Constants.GAMERTAG)
+    } else {
+        mainController.getGamertag()
+    }
+
     private fun <T> onRequestServiceRecord(bundle: Bundle?,
                                            resultKey: String,
                                            resultTtl: Long,
                                            resultClass: Class<T>,
                                            serviceRecordFn: (List<String?>) -> Call<ServiceRecordCollection<T>>): Promise<T?, Exception> {
-        val gamertag = if (bundle?.containsKey(Constants.GAMERTAG)?:false) {
-            bundle?.getString(Constants.GAMERTAG)
-        } else {
-            mainController.getGamertag()
-        }
+        val gamertag = getGamertag(bundle)
 
         return async {
             val key = "%s-%s".format(resultKey, gamertag)

@@ -28,6 +28,7 @@
     <string name="last_games">LAST %d GAMES</string>
     <string name="total_wins">TOTAL WINS</string>
     <string name="total_losses">TOTAL LOSSES</string>
+    <string name="total_ties">TOTAL TIES</string>
     <string name="win_percentage">WIN PERCENTAGE</string>
 
     <string name="multiplayer_playtime">MULTIPLAYER PLAYTIME</string>

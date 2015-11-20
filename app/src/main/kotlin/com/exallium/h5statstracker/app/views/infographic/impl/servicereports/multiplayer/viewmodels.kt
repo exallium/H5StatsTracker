@@ -47,7 +47,7 @@ class MultiplayerDataFactory(val mainController: MainController, val bundle: Bun
             val gamesCompletedModel = MultiplayerViewModel(results, MultiplayerServiceRecord.GAMES_COMPLETED)
             val winPercentageModel = MultiplayerViewModel(results, MultiplayerServiceRecord.WIN_PERCENTAGE)
             val matchHistoryModel = MultiplayerViewModel(results, MultiplayerServiceRecord.MATCH_HISTORY)
-            fn(listOf(rankModel, kdrModel, topCsrModel, playtimeModel, gamesCompletedModel, winPercentageModel))
+            fn(listOf(rankModel, kdrModel, topCsrModel, playtimeModel, gamesCompletedModel, winPercentageModel, matchHistoryModel))
         }
     }
 }
