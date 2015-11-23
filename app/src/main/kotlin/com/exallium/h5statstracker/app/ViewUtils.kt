@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import com.exallium.h5statstracker.app.views.GamertagContentView
 import com.exallium.h5statstracker.app.views.infographic.InfographicAdapter
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.arena.ArenaDataFactory
+import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.campaign.CampaignDataFactory
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.common.getViewByType
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.custom.CustomDataFactory
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.multiplayer.MultiplayerDataFactory
@@ -37,6 +38,9 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
         Router.Route.CUSTOM_SERVICE_RECORD -> InfographicAdapter(
                 getViewByType,
                 CustomDataFactory(controller.statsService, request.bundle), controller)
+        Router.Route.CAMPAIGN_SERVICE_RECORD -> InfographicAdapter(
+                getViewByType,
+                CampaignDataFactory(controller.statsService, request.bundle), controller)
         else -> throw IllegalStateException("Unknown Route")
     }
     return view

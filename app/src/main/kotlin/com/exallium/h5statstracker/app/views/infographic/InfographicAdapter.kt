@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.exallium.h5statstracker.app.MainController
-import com.exallium.h5statstracker.app.services.MetadataService
 import java.util.*
 
 public class InfographicAdapter<T>(val viewFactory: (Int, Context, MainController) -> InfographicView<T>,

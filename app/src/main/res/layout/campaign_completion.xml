@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="@dimen/service_record_column_width"
+              android:layout_gravity="center_horizontal"
+              android:layout_height="wrap_content" xmlns:custom="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:layout_width="match_parent"
+              android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+              android:layout_height="wrap_content"
+              android:text="@string/campaign_completion"/>
+    <FrameLayout android:layout_width="@dimen/service_record_column_width"
+                 android:paddingTop="16dp"
+                 android:layout_height="@dimen/service_record_column_width">
+        <com.github.lzyzsd.circleprogress.DonutProgress
+                android:id="@+id/collectible_progress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                custom:donut_progress="0"
+                custom:donut_text_size="24sp"
+                custom:donut_text_color="@android:color/black"
+                custom:donut_finished_color="@color/halo_blue"
+                custom:donut_unfinished_color="@color/halo_lt_grey" />
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:id="@+id/boss_takedown_count"
+                  android:gravity="center"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+    </FrameLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <View android:layout_width="8dp" android:layout_height="match_parent" android:background="@color/halo_blue" />
+        <Space android:layout_width="8dp" android:layout_height="match_parent" />
+        <TextView android:layout_width="0dip"
+                  android:text="@string/campaign_collectible_skulls"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"/>
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:id="@+id/skulls" />
+    </LinearLayout>
+    <Space android:layout_width="match_parent" android:layout_height="4dp"/>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <View android:layout_width="8dp" android:layout_height="match_parent" android:background="@color/halo_dark_blue" />
+        <Space android:layout_width="8dp" android:layout_height="match_parent" />
+        <TextView android:layout_width="0dip"
+                  android:text="@string/campaign_collectible_mission_intel"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"/>
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:id="@+id/mission_intel" />
+    </LinearLayout>
+</LinearLayout>

@@ -22,6 +22,8 @@ class MetadataService(val apiFactory: ApiFactory, val cacheService: CacheService
         val IMPULSES_TTL = Units.MONTH_MILLIS
         val GAME_BASE_VARAINTS_KEY = "gameBaseVariants"
         val GAME_BASE_VARIANTS_TTL = Units.DAY_MILLIS * 7
+        val FLEXIBLE_STATS = "flexibleStats"
+        val FLEXIBLE_STATS_TTL = Units.DAY_MILLIS * 7
     }
 
     private fun <E> getList(key: String, ttlMillis: Long, elementClass: Class<E>, call: Call<List<E>>) =
@@ -81,6 +83,16 @@ class MetadataService(val apiFactory: ApiFactory, val cacheService: CacheService
             apiFactory.metadata.gameBaseVariants)
 
     fun getGameBaseVariant(id: String) = getGameBaseVariants() then {
+        it.find { it.id == id }
+    }
+
+    fun getFlexibleStats() = getList(
+            FLEXIBLE_STATS,
+            FLEXIBLE_STATS_TTL,
+            FlexibleStat::class.java,
+            apiFactory.metadata.flexibleStats)
+
+    fun getFlexibleStat(id: String) = getFlexibleStats() then {
         it.find { it.id == id }
     }
 }

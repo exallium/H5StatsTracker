@@ -38,7 +38,7 @@ val getMultiplayerViewByType = { viewType: Int, context: Context, mainController
         MultiplayerServiceRecord.MATCH_HISTORY.getViewType() -> MatchResultsView(context, mainController.statsService)
         MultiplayerServiceRecord.ASSASSINATIONS.getViewType() -> AssassinationsView(context)
         MultiplayerServiceRecord.HEADSHOTS.getViewType() -> HeadshotsView(context)
-        MultiplayerServiceRecord.ASSISTS.getViewType() -> HeadshotsView(context)
+        MultiplayerServiceRecord.ASSISTS.getViewType() -> AssistsView(context)
         else -> throw IllegalArgumentException("Unknown View %d".format(viewType))
     }
 }

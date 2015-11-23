@@ -41,6 +41,12 @@
     <string name="headshots">HEADSHOTS</string>
     <string name="assists">ASSISTS</string>
     <string name="top_variant">TOP VARIANT</string>
+    <string name="solo">SOLO</string>
+    <string name="coop">COOP</string>
+    <string name="campaign_completion">COLLECTIBLE COMPLETION</string>
+    <string name="campaign_collectible_skulls">SKULLS</string>
+    <string name="campaign_collectible_mission_intel">MISSION INTEL</string>
+    <string name="campaign_c">--</string>
 
     <string name="multiplayer_playtime">MULTIPLAYER PLAYTIME</string>
     <string name="multiplayer_games_completed">MULTIPLAYER GAMES COMPLETED</string>

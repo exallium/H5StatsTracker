@@ -18,7 +18,7 @@ class StatsService(val mainController: MainController) {
         val ARENA_RESULT_KEY = "arenaResult"
         val CAMPAIGN_RESULT_KEY = "campaignResult"
         val CUSTOM_RESULT_KEY = "customResult"
-        val RESULT_TTL = Units.MINUTE_MILLIS * 5
+        val RESULT_TTL = Units.MINUTE_MILLIS * 10
 
         val MATCHES_KEY = "matches"
         val MATCHES_TTL = Units.MINUTE_MILLIS * 10
