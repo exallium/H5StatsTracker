@@ -12,7 +12,7 @@ import nl.komponents.kovenant.then
 import retrofit.Call
 import timber.log.Timber
 
-class MetadataService(val apiFactory: ApiFactory, val memoryCache: BaseCache, val diskCache: BaseCache) {
+class MetadataService(val apiFactory: ApiFactory, val cacheService: CacheService) {
 
     companion object {
         val SPARTAN_RANKS_KEY = "spartanRanks"
@@ -25,33 +25,15 @@ class MetadataService(val apiFactory: ApiFactory, val memoryCache: BaseCache, va
         val IMPULSES_TTL = Units.MONTH_MILLIS
     }
 
-    private fun <E> getList(key: String, ttlMillis: Long, elementClass: Class<E>, call: Call<List<E>>) = async {
-        val memoryRanks = memoryCache.readList(key, elementClass)
-        if (memoryRanks.size != 0) {
-            Timber.i("Memory Cache Hit: $key")
-            memoryRanks
-        } else {
-            Timber.i("Memory Cache Miss: $key")
-            val diskRanks = diskCache.readList(key, elementClass)
-            if (diskRanks.size != 0) {
-                Timber.i("Disk Cache Hit: $key")
-                memoryCache.write(diskRanks, key, ttlMillis)
-                diskRanks
+    private fun <E> getList(key: String, ttlMillis: Long, elementClass: Class<E>, call: Call<List<E>>) =
+        cacheService.readListFromCache(key, elementClass, ttlMillis, {
+            val response = call.execute()
+            if (!response.isSuccess) {
+                listOf()
             } else {
-                Timber.i("Disk Cache Miss: $key")
-                val response = call.execute()
-                if (!response.isSuccess) {
-                    Timber.i("Network Miss: $key")
-                    listOf()
-                } else {
-                    Timber.i("Network Hit: $key")
-                    diskCache.write(response.body(), key, ttlMillis)
-                    memoryCache.write(response.body(), key, ttlMillis)
-                    response.body()
-                }
+                response.body()
             }
-        }
-    }
+        })
 
     fun getSpartanRanks() = getList(
             SPARTAN_RANKS_KEY,

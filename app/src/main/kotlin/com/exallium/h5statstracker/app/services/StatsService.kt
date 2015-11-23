@@ -27,33 +27,21 @@ class StatsService(val mainController: MainController) {
         val MATCHES_DEFAULT_GAMEMODES = listOf("arena", "warzone", "custom")
     }
 
-    fun onRequestMatchHistory(bundle: Bundle?) = async {
+    fun onRequestMatchHistory(bundle: Bundle?): Promise<List<Match>, Exception> {
         val gamertag = getGamertag(bundle)
-        val startOffset = bundle?.getInt(Constants.START_OFFSET)?:MATCHES_DEFAULT_START_OFFSET
-        val count = bundle?.getInt(Constants.COUNT)?:MATCHES_DEFAULT_COUNT
-        val gameModes = bundle?.getStringArrayList(Constants.GAME_MODES)?:MATCHES_DEFAULT_GAMEMODES
+        val startOffset = bundle?.getInt(Constants.START_OFFSET) ?: MATCHES_DEFAULT_START_OFFSET
+        val count = bundle?.getInt(Constants.COUNT) ?: MATCHES_DEFAULT_COUNT
+        val gameModes = bundle?.getStringArrayList(Constants.GAME_MODES) ?: MATCHES_DEFAULT_GAMEMODES
         val cacheKey = "%s-%s-%d-%d-%s".format(MATCHES_KEY, gamertag, startOffset, count, gameModes.joinToString("-"))
 
-        val memResult = mainController.memoryCache.readList(cacheKey, Match::class.java)
-        if (memResult.isNotEmpty()) {
-            memResult
-        } else {
-            val diskResult = mainController.diskCache.readList(cacheKey, Match::class.java)
-            if (diskResult.isNotEmpty()) {
-                mainController.memoryCache.write(diskResult, cacheKey, MATCHES_TTL)
-                diskResult
+        return mainController.cacheService.readListFromCache(cacheKey, Match::class.java, MATCHES_TTL, {
+            val response = mainController.apiFactory.stats.getRecentMatchInfo(gamertag, gameModes, startOffset, count).execute()
+            if (response.isSuccess && response.body().resultCount != 0) {
+                response.body().results
             } else {
-                val response = mainController.apiFactory.stats.getRecentMatchInfo(gamertag, gameModes, startOffset, count).execute()
-                if (response.isSuccess && response.body().resultCount != 0) {
-                    val matches = response.body().results
-                    mainController.diskCache.write(matches, cacheKey, MATCHES_TTL)
-                    mainController.memoryCache.write(matches, cacheKey, MATCHES_TTL)
-                    matches
-                } else {
-                    listOf()
-                }
+                listOf()
             }
-        }
+        })
     }
 
     fun onRequestArenaServiceRecord(bundle: Bundle?): Promise<ArenaResult?, Exception> {
@@ -76,7 +64,7 @@ class StatsService(val mainController: MainController) {
                 WarzoneResult::class.java, { mainController.apiFactory.stats.getWarzoneServiceRecords(it) })
     }
 
-    private fun getGamertag(bundle: Bundle?) = if (bundle?.containsKey(Constants.GAMERTAG)?:false) {
+    private fun getGamertag(bundle: Bundle?) = if (bundle?.containsKey(Constants.GAMERTAG) ?: false) {
         bundle?.getString(Constants.GAMERTAG)
     } else {
         mainController.getGamertag()
@@ -88,41 +76,20 @@ class StatsService(val mainController: MainController) {
                                            resultClass: Class<T>,
                                            serviceRecordFn: (List<String?>) -> Call<ServiceRecordCollection<T>>): Promise<T?, Exception> {
         val gamertag = getGamertag(bundle)
-
-        return async {
-            val key = "%s-%s".format(resultKey, gamertag)
-            Timber.i("Retrieving Service Record $key")
-            val memoryResult = mainController.memoryCache.readItem(key, resultClass)
-            if (memoryResult != null) {
-                Timber.i("Memory Cache Hit for $key")
-                memoryResult
-            } else {
-                Timber.i("Memory Cache Miss for $key")
-                val diskResult = mainController.diskCache.readItem(key, resultClass)
-                if (diskResult != null) {
-                    Timber.i("Disk Cache Hit for $key")
-                    diskResult
+        val key = "%s-%s".format(resultKey, gamertag)
+        return mainController.cacheService.readItemFromCache(key, resultClass, resultTtl, {
+            val response = serviceRecordFn(listOf(gamertag)).execute()
+            if (response.code() == 200 && response.body().results.size != 0) {
+                val result = response.body().results.first()
+                if (result.resultCode == 0) {
+                    result.result
                 } else {
-                    Timber.i("Disk Cache Miss for $key")
-                    val response = serviceRecordFn(listOf(gamertag)).execute()
-                    if (response.code() == 200 && response.body().results.size != 0) {
-                        val result = response.body().results.first()
-                        if (result.resultCode == 0) {
-                            Timber.i("Network Hit for $key")
-                            mainController.diskCache.write(result.result as Any, key, resultTtl)
-                            mainController.memoryCache.write(result.result as Any, key, resultTtl)
-                            result.result
-                        } else {
-                            Timber.i("Network Miss for $key")
-                            null
-                        }
-                    } else {
-                        Timber.i("Network Miss for $key")
-                        null
-                    }
+                    null
                 }
+            } else {
+                null
             }
-        }
+        })
     }
 
 }

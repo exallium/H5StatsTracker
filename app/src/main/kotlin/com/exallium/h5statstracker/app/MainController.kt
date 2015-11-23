@@ -3,8 +3,7 @@ package com.exallium.h5statstracker.app
 import android.content.Context
 import android.os.Bundle
 import com.exallium.h5.api.ApiFactory
-import com.exallium.h5statstracker.app.model.DiskCache
-import com.exallium.h5statstracker.app.model.MemoryCache
+import com.exallium.h5statstracker.app.services.CacheService
 import com.exallium.h5statstracker.app.services.MetadataService
 import com.exallium.h5statstracker.app.services.ProfileService
 import com.exallium.h5statstracker.app.services.StatsService
@@ -13,11 +12,10 @@ import timber.log.Timber
 
 public class MainController(val context: Context) {
 
-    val memoryCache = MemoryCache()
-    val diskCache = DiskCache(context.cacheDir)
+    val cacheService = CacheService(context.cacheDir)
     val apiFactory = ApiFactory(context.resources.getString(R.string.api_key))
     val statsService = StatsService(this)
-    val metadataService = MetadataService(apiFactory, memoryCache, diskCache)
+    val metadataService = MetadataService(apiFactory, cacheService)
     val profileService = ProfileService(apiFactory.profile)
     val gamertagSubject = BehaviourSubject<String>()
 
