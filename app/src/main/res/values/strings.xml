@@ -40,6 +40,7 @@
     <string name="assassinations">ASSASSINATIONS</string>
     <string name="headshots">HEADSHOTS</string>
     <string name="assists">ASSISTS</string>
+    <string name="top_variant">TOP VARIANT</string>
 
     <string name="multiplayer_playtime">MULTIPLAYER PLAYTIME</string>
     <string name="multiplayer_games_completed">MULTIPLAYER GAMES COMPLETED</string>

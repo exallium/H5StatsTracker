@@ -7,6 +7,7 @@ import com.exallium.h5statstracker.app.MainController
 import com.exallium.h5statstracker.app.R
 import com.exallium.h5statstracker.app.views.infographic.InfographicView
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.arena.getArenaServiceRecordViewByType
+import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.custom.getCustomServiceRecordViewByType
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.multiplayer.getMultiplayerViewByType
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.warzone.getWarzoneServiceRecordViewByType
 import org.joda.time.format.PeriodFormatterBuilder
@@ -17,6 +18,7 @@ val getViewByType: (Int, Context, MainController) -> InfographicView<List<BaseSe
         1 -> getMultiplayerViewByType(viewType, context, mainController)
         2 -> getArenaServiceRecordViewByType(viewType, context, mainController)
         3 -> getWarzoneServiceRecordViewByType(viewType, context, mainController)
+        4 -> getCustomServiceRecordViewByType(viewType, context, mainController)
         else -> throw IllegalArgumentException("Unknown View group %d".format(viewGroup))
     }
 }

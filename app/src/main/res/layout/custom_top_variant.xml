@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_gravity="center_horizontal"
+              android:layout_width="@dimen/service_record_column_width"
+              android:layout_height="wrap_content">
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Title"
+              android:text="@string/top_variant"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <ImageView android:layout_width="@dimen/arena_csr_icon_height"
+                   android:layout_height="@dimen/arena_csr_icon_height"
+                   android:id="@+id/variant_icon"/>
+        <TextView android:layout_width="0dip"
+                  android:layout_weight="1"
+                  android:layout_height="match_parent"
+                  android:gravity="center_vertical"
+                  android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                  android:id="@+id/variant_name"/>
+    </LinearLayout>
+</LinearLayout>

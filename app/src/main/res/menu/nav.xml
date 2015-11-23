@@ -8,7 +8,7 @@
         <item android:id="@+id/campaign_stats" android:title="@string/campaign_stats" />
     </group>
     <group android:id="@+id/attainable_stuff">
-        <item android:id="@+id/medals" android:title="@string/medals" />
+        <item android:id="@+id/medals" android:title="@string/medals" android:icon="@drawable/ic_bookmark_black_24dp" />
         <item android:id="@+id/commendations" android:title="@string/commendations" />
         <item android:id="@+id/weapons" android:title="@string/weapons" />
     </group>

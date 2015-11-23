@@ -1,10 +1,7 @@
 package com.exallium.h5statstracker.app.services
 
 import com.exallium.h5.api.ApiFactory
-import com.exallium.h5.api.models.metadata.CSRDesignation
-import com.exallium.h5.api.models.metadata.Impulse
-import com.exallium.h5.api.models.metadata.Playlist
-import com.exallium.h5.api.models.metadata.SpartanRank
+import com.exallium.h5.api.models.metadata.*
 import com.exallium.h5statstracker.app.Units
 import com.exallium.h5statstracker.app.model.BaseCache
 import nl.komponents.kovenant.async
@@ -23,6 +20,8 @@ class MetadataService(val apiFactory: ApiFactory, val cacheService: CacheService
         val CSR_DESIGNATIONS_TTL = Units.MONTH_MILLIS
         val IMPULSES_KEY = "impulses"
         val IMPULSES_TTL = Units.MONTH_MILLIS
+        val GAME_BASE_VARAINTS_KEY = "gameBaseVariants"
+        val GAME_BASE_VARIANTS_TTL = Units.DAY_MILLIS * 7
     }
 
     private fun <E> getList(key: String, ttlMillis: Long, elementClass: Class<E>, call: Call<List<E>>) =
@@ -72,6 +71,16 @@ class MetadataService(val apiFactory: ApiFactory, val cacheService: CacheService
             apiFactory.metadata.impulses)
 
     fun getImpulse(id: Long) = getImpulses() then {
+        it.find { it.id == id }
+    }
+
+    fun getGameBaseVariants() = getList(
+            GAME_BASE_VARAINTS_KEY,
+            GAME_BASE_VARIANTS_TTL,
+            GameBaseVariant::class.java,
+            apiFactory.metadata.gameBaseVariants)
+
+    fun getGameBaseVariant(id: String) = getGameBaseVariants() then {
         it.find { it.id == id }
     }
 }

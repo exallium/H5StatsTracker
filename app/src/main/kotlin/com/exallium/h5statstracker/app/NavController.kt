@@ -21,6 +21,11 @@ public class NavController(val mainController: MainController, val navView: Navi
                 R.id.service_record -> goToServiceRecordSummary()
                 R.id.arena_stats -> goToArenaSummary()
                 R.id.warzone_stats -> goToWarzoneSummary()
+                R.id.custom_stats -> goToCustomSummary()
+                R.id.campaign_stats -> goToCampaignSummary()
+                R.id.medals -> goToMedals()
+                R.id.commendations -> goToCommendations()
+                R.id.weapons -> goToWeapons()
                 else -> false
             }
         }
@@ -74,6 +79,31 @@ public class NavController(val mainController: MainController, val navView: Navi
 
     private fun goToWarzoneSummary(): Boolean {
         Router.onRequest(Router.Request(Router.Route.WARZONE_SERVICE_RECORD))
+        return true
+    }
+
+    private fun goToCustomSummary(): Boolean {
+        Router.onRequest(Router.Request(Router.Route.CUSTOM_SERVICE_RECORD))
+        return true
+    }
+
+    private fun goToCampaignSummary(): Boolean {
+        Router.onRequest(Router.Request(Router.Route.CAMPAIGN_SERVICE_RECORD))
+        return true
+    }
+
+    private fun goToMedals(): Boolean {
+        Router.onRequest(Router.Request(Router.Route.MEDALS))
+        return true
+    }
+
+    private fun goToCommendations(): Boolean {
+        Router.onRequest(Router.Request(Router.Route.COMMENDATIONS))
+        return true
+    }
+
+    private fun goToWeapons(): Boolean {
+        Router.onRequest(Router.Request(Router.Route.WEAPONS))
         return true
     }
 

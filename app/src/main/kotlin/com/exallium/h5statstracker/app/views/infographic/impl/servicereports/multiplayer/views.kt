@@ -89,11 +89,11 @@ class PlaytimeView(context:Context) : CommonTextView<List<BaseServiceRecordResul
     override fun bindText(data: List<BaseServiceRecordResult>, labelView: TextView, dataView: TextView) {
         labelView.setText(if (data.size == 1) R.string.playtime else R.string.multiplayer_playtime)
         val stats = getMultiplayerStats(data)
-        val period = stats
+        val periodList = stats
                 .map { it.totalTimePlayed }
                 .filter { !it.isNullOrEmpty() }
                 .map { Period(it) }
-                .reduce() { l, r -> l + r }
+        val period = if (periodList.isNotEmpty()) periodList.reduce() { l, r -> l + r } else Period()
 
         dataView.text = PLAYTIME_FORMATTER.print(period.normalizedStandard())
     }
