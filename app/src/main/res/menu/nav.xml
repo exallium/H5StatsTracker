@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group>
+    <group android:id="@+id/service_records">
         <item android:id="@+id/service_record" android:title="@string/service_record" android:icon="@drawable/ic_assessment_black_24dp" />
+        <item android:id="@+id/arena_stats" android:title="@string/arena_stats" />
+        <item android:id="@+id/warzone_stats" android:title="@string/warzone_stats" />
+        <item android:id="@+id/custom_stats" android:title="@string/custom_stats" />
+        <item android:id="@+id/campaign_stats" android:title="@string/campaign_stats" />
     </group>
-    <group>
+    <group android:id="@+id/attainable_stuff">
+        <item android:id="@+id/medals" android:title="@string/medals" />
+        <item android:id="@+id/commendations" android:title="@string/commendations" />
+        <item android:id="@+id/weapons" android:title="@string/weapons" />
+    </group>
+    <group android:id="@+id/system">
         <item android:id="@+id/log_out" android:title="@string/log_out" android:icon="@drawable/ic_power_settings_new_black_24dp" />
         <item android:id="@+id/settings" android:title="@string/settings" android:icon="@drawable/ic_settings_black_24dp" />
     </group>

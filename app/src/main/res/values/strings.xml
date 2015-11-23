@@ -13,6 +13,14 @@
     <string name="settings">Settings</string>
 
     <!-- Service Record Summary -->
+    <string name="arena_stats">Arena Stats</string>
+    <string name="custom_stats">Custom Stats</string>
+    <string name="warzone_stats">Warzone Stats</string>
+    <string name="campaign_stats">Campaign Stats</string>
+    <string name="medals">Medals</string>
+    <string name="commendations">Commendations</string>
+    <string name="weapons">Weapons</string>
+
     <string name="sr">SR</string>
     <string name="top_csr">TOP CSR</string>
     <string name="kd">K/D</string>
