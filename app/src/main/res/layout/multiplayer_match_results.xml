@@ -4,18 +4,17 @@
               android:layout_gravity="center_horizontal"
               android:layout_width="@dimen/service_record_column_width"
               android:layout_height="match_parent">
+    <Space android:layout_height="16dp" android:layout_width="match_parent" />
     <TextView android:id="@+id/last_games"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
-    <LinearLayout android:orientation="horizontal"
-                  android:id="@+id/win_container"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content" />
-    <LinearLayout android:orientation="horizontal"
-                  android:id="@+id/loss_container"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content" />
+    <com.exallium.h5statstracker.app.views.infographic.impl.servicereports.multiplayer.SegmentView
+            android:layout_height="@dimen/multiplayer_segment_height"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:id="@+id/segments"
+            android:layout_width="match_parent"/>
     <LinearLayout android:orientation="horizontal"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content">
@@ -33,6 +32,7 @@
     </LinearLayout>
     <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
                   android:paddingTop="4dp"
+                  android:paddingBottom="4dp"
                   android:layout_height="wrap_content">
         <View android:layout_width="8dp" android:layout_height="match_parent"
               android:background="@color/halo_dark_orange"/>

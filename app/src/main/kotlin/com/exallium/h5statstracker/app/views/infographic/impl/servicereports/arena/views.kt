@@ -52,7 +52,7 @@ class TopCsrCondensedView(context: Context, val metadataService: MetadataService
 
             metadataService.getCsrDesignation(result.arenaStat.highestCsrAttained.designationId.toLong()) successUi {
                 val tier = it?.tiers?.find { it.id == result.arenaStat.highestCsrAttained.tier.toLong() }
-                val name = it?.name?:""
+                val name = it?.name?.toUpperCase()?:""
                 tier?.let {
                     Picasso.with(context).load(tier.iconImageUrl).into(csrImage)
                     csrTitle.text = "%s %d".format(name, it.id)

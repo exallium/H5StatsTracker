@@ -4,4 +4,5 @@
     <color name="halo_blue">#FF3DABEE</color>
     <color name="halo_lt_grey">#FFE2E2E2</color>
     <color name="halo_dark_orange">#FFE83000</color>
+    <color name="halo_divider_grey">#FFD0D0D0</color>
 </resources>

@@ -2,7 +2,11 @@ package com.exallium.h5statstracker.app.views.infographic.impl.servicereports.mu
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -151,6 +155,13 @@ class MatchResultsView(context: Context, val statsService: StatsService) : Infog
         bundle.putString(Constants.GAMERTAG, player)
         bundle.putInt(Constants.COUNT, MAX_GAME_HISTORY)
 
+        val stats = getMultiplayerStats(data)
+        val totalWins = stats.map { it.totalGamesWon } .sum()
+        val totalLosses = stats.map { it.totalGamesLost } .sum()
+
+        (findViewById(R.id.total_wins) as TextView).text = "%d".format(totalWins)
+        (findViewById(R.id.total_losses) as TextView).text = "%d".format(totalLosses)
+
         statsService.onRequestMatchHistory(bundle) successUi {
 
             val lastGames = findViewById(R.id.last_games) as TextView
@@ -162,28 +173,70 @@ class MatchResultsView(context: Context, val statsService: StatsService) : Infog
 
             lastGames.text = context.resources.getString(R.string.last_games, playerResults.size)
 
-            val wins = findViewById(R.id.win_container) as ViewGroup
-            val losses = findViewById(R.id.loss_container) as ViewGroup
-
-            playerResults.forEach {
-                wins.addView(createSegment(it, 3))
-                losses.addView(createSegment(it, 1))
-            }
+            val seg = findViewById(R.id.segments) as SegmentView
+            seg.resultSet = playerResults
         }
 
-    }
-
-    private fun createSegment(result: Int, expected: Int): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.segment, null)
-        if (result != expected) {
-            return view
-        } else if (result == 1) {
-            view.setBackgroundResource(R.drawable.segment_loss)
-        } else {
-            view.setBackgroundResource(R.drawable.segment_win)
-        }
-
-        return view
     }
 
 }
+
+class SegmentView : View {
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
+    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr)
+    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attributeSet, defStyleAttr, defStyleRes)
+
+    var resultSet: List<Int> = listOf()
+        set(value: List<Int>) {
+            field = value
+            postInvalidate()
+        }
+
+    val paint = Paint()
+
+    val winColor = context.resources.getColor(R.color.halo_blue)
+    val lossColor = context.resources.getColor(R.color.halo_dark_orange)
+    val muteColor = context.resources.getColor(R.color.halo_lt_grey)
+    val divColor = context.resources.getColor(R.color.halo_divider_grey)
+
+    companion object {
+        val DIVIDER_WIDTH = 2
+        val DIVIDER_COMP = DIVIDER_WIDTH / 2
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        if (resultSet.isNotEmpty()) {
+            val segmentWidth = (canvas.width.toFloat() / resultSet.size.toFloat()).toInt()
+            val colorWidth = segmentWidth / 2
+            val segmentHeight = canvas.height / 2 - DIVIDER_COMP
+
+            val topRect = Rect(0, 0, colorWidth, segmentHeight)
+            val botRect = Rect(0, segmentHeight + DIVIDER_WIDTH, segmentWidth, canvas.height)
+
+
+            paint.color = divColor
+            val divRect = Rect(0, segmentHeight, canvas.width, segmentHeight + DIVIDER_WIDTH)
+            canvas.drawRect(divRect, paint)
+
+            var i: Int = 0
+            resultSet.forEach {
+                val topColor = if (it == 3) winColor else muteColor
+                val bottomColor = if (it == 1) lossColor else muteColor
+
+                topRect.left = i * segmentWidth
+                botRect.left = i * segmentWidth
+                topRect.right = topRect.left + colorWidth
+                botRect.right = botRect.left + colorWidth
+
+                paint.color = topColor
+                canvas.drawRect(topRect, paint)
+
+                paint.color = bottomColor
+                canvas.drawRect(botRect, paint)
+                i++
+            }
+        }
+    }
+}
+

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<View xmlns:android="http://schemas.android.com/apk/res/android"
-      android:background="@drawable/segment"
-      android:layout_width="@dimen/multiplayer_segment_width"
-      android:layout_height="16dp">
-</View>

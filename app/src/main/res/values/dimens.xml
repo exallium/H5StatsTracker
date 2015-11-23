@@ -4,6 +4,5 @@
     <dimen name="service_record_width">320dp</dimen>
     <dimen name="service_record_column_width">320dp</dimen>
     <dimen name="arena_csr_icon_height">160dp</dimen>
-    <dimen name="multiplayer_segment_width">16dp</dimen>
-    <dimen name="multiplayer_segment_width_half">8dp</dimen>
+    <dimen name="multiplayer_segment_height">80dp</dimen>
 </resources>
