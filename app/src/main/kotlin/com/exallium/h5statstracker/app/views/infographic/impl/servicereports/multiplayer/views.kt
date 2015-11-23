@@ -222,6 +222,7 @@ class SegmentView : View {
     constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attributeSet, defStyleAttr, defStyleRes)
 
     var resultSet: List<Int> = listOf()
+        get() { return if (isInEditMode) listOf(1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3) else field }
         set(value: List<Int>) {
             field = value
             postInvalidate()
