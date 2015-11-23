@@ -23,7 +23,8 @@ public object Router : Flow.Listener {
 
     public enum class Route(val titleId: Int, val navId: Int) {
         SERVICE_RECORD_SUMMARY(R.string.service_record, R.id.service_record),
-        ARENA_SERVICE_RECORD(R.string.arena_service_record_title, R.id.service_record),
+        ARENA_SERVICE_RECORD(R.string.arena_stats, R.id.arena_stats),
+        WARZONE_SERVICE_RECORD(R.string.warzone_stats, R.id.warzone_stats),
         GAMERTAG(R.string.gamertag_title, R.id.log_out)
     }
 

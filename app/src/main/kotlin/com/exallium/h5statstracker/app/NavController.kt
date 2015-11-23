@@ -19,6 +19,8 @@ public class NavController(val mainController: MainController, val navView: Navi
             return when (p0?.itemId) {
                 R.id.log_out -> logOut()
                 R.id.service_record -> goToServiceRecordSummary()
+                R.id.arena_stats -> goToArenaSummary()
+                R.id.warzone_stats -> goToWarzoneSummary()
                 else -> false
             }
         }
@@ -62,6 +64,16 @@ public class NavController(val mainController: MainController, val navView: Navi
 
     private fun goToServiceRecordSummary(): Boolean {
         Router.onRequest(Router.Request(Router.Route.SERVICE_RECORD_SUMMARY))
+        return true
+    }
+
+    private fun goToArenaSummary(): Boolean {
+        Router.onRequest(Router.Request(Router.Route.ARENA_SERVICE_RECORD))
+        return true
+    }
+
+    private fun goToWarzoneSummary(): Boolean {
+        Router.onRequest(Router.Request(Router.Route.WARZONE_SERVICE_RECORD))
         return true
     }
 

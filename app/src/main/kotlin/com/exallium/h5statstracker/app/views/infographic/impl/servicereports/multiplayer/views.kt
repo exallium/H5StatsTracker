@@ -7,16 +7,11 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.exallium.h5.api.models.stats.common.BaseStats
-import com.exallium.h5.api.models.stats.servicerecords.ArenaResult
-import com.exallium.h5.api.models.stats.servicerecords.BaseServiceRecordResult
-import com.exallium.h5.api.models.stats.servicerecords.CustomResult
-import com.exallium.h5.api.models.stats.servicerecords.WarzoneResult
+import com.exallium.h5.api.models.stats.servicerecords.*
 import com.exallium.h5statstracker.app.Constants
 import com.exallium.h5statstracker.app.MainController
 import com.exallium.h5statstracker.app.R
@@ -29,6 +24,7 @@ import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.sum
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.ui.successUi
 import org.joda.time.Period
+import java.util.*
 
 internal val MAX_GAME_HISTORY = 20
 
@@ -40,6 +36,9 @@ val getMultiplayerViewByType = { viewType: Int, context: Context, mainController
         MultiplayerServiceRecord.WIN_PERCENTAGE.getViewType() -> WinPercentageView(context)
         MultiplayerServiceRecord.KILL_DEATH_RATIO.getViewType() -> KillDeathRatioView(context)
         MultiplayerServiceRecord.MATCH_HISTORY.getViewType() -> MatchResultsView(context, mainController.statsService)
+        MultiplayerServiceRecord.ASSASSINATIONS.getViewType() -> AssassinationsView(context)
+        MultiplayerServiceRecord.HEADSHOTS.getViewType() -> HeadshotsView(context)
+        MultiplayerServiceRecord.ASSISTS.getViewType() -> HeadshotsView(context)
         else -> throw IllegalArgumentException("Unknown View %d".format(viewType))
     }
 }
@@ -123,6 +122,30 @@ class WinPercentageView(context: Context) : CommonTextView<List<BaseServiceRecor
     }
 }
 
+class AssassinationsView(context: Context) : CommonTextView<List<BaseServiceRecordResult>>(context) {
+    override fun bindText(data: List<BaseServiceRecordResult>, labelView: TextView, dataView: TextView) {
+        labelView.setText(if (data.size == 1) R.string.assassinations else R.string.multiplayer_assassinations)
+        val stats = getMultiplayerStats(data)
+        dataView.text = "%d".format(stats.map { it.totalAssassinations } .sum())
+    }
+}
+
+class HeadshotsView(context: Context) : CommonTextView<List<BaseServiceRecordResult>>(context) {
+    override fun bindText(data: List<BaseServiceRecordResult>, labelView: TextView, dataView: TextView) {
+        labelView.setText(if (data.size == 1) R.string.headshots else R.string.multiplayer_headshots)
+        val stats = getMultiplayerStats(data)
+        dataView.text = "%d".format(stats.map { it.totalHeadshots } .sum())
+    }
+}
+
+class AssistsView(context: Context) : CommonTextView<List<BaseServiceRecordResult>>(context) {
+    override fun bindText(data: List<BaseServiceRecordResult>, labelView: TextView, dataView: TextView) {
+        labelView.setText(if (data.size == 1) R.string.assists else R.string.multiplayer_assists)
+        val stats = getMultiplayerStats(data)
+        dataView.text = "%d".format(stats.map { it.totalAssists } .sum())
+    }
+}
+
 class KillDeathRatioView(context: Context) : InfographicView<List<BaseServiceRecordResult>>(context, R.layout.multiplayer_kdr) {
     override fun render(data: List<BaseServiceRecordResult>) {
 
@@ -145,6 +168,14 @@ class KillDeathRatioView(context: Context) : InfographicView<List<BaseServiceRec
 
 class MatchResultsView(context: Context, val statsService: StatsService) : InfographicView<List<BaseServiceRecordResult>>(context, R.layout.multiplayer_match_results) {
 
+    companion object {
+        val MODE_MAP = mapOf(
+                ArenaResult::class.java to "arena",
+                WarzoneResult::class.java to "warzone",
+                CustomResult::class.java to "custom",
+                CampaignResult::class.java to "campaign")
+    }
+
     override fun render(data: List<BaseServiceRecordResult>) {
         if (data.isEmpty()) {
             return
@@ -154,6 +185,9 @@ class MatchResultsView(context: Context, val statsService: StatsService) : Infog
         val bundle = Bundle()
         bundle.putString(Constants.GAMERTAG, player)
         bundle.putInt(Constants.COUNT, MAX_GAME_HISTORY)
+
+        val modes = data.map { MODE_MAP[it.javaClass] }
+        bundle.putStringArrayList(Constants.GAME_MODES, ArrayList(modes))
 
         val stats = getMultiplayerStats(data)
         val totalWins = stats.map { it.totalGamesWon } .sum()

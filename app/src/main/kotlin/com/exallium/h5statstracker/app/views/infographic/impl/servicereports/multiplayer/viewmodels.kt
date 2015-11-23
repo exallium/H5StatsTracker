@@ -18,7 +18,10 @@ enum class MultiplayerServiceRecord {
     GAMES_COMPLETED,
     KILL_DEATH_RATIO,
     WIN_PERCENTAGE,
-    MATCH_HISTORY;
+    ASSASSINATIONS,
+    HEADSHOTS,
+    MATCH_HISTORY,
+    ASSISTS;
 
     fun getViewType(): Int {
         return ordinal + SERVICE_RECORD_MULTIPLAYER_PREFIX
@@ -52,7 +55,7 @@ class MultiplayerDataFactory(val mainController: MainController, val bundle: Bun
     }
 }
 
-class MultiplayerViewModel(val list: List<BaseServiceRecordResult>, val multiplayerServiceRecord: MultiplayerServiceRecord) : InfographicViewModel<List<BaseServiceRecordResult>> {
+open class MultiplayerViewModel(val list: List<BaseServiceRecordResult>, val multiplayerServiceRecord: MultiplayerServiceRecord) : InfographicViewModel<List<BaseServiceRecordResult>> {
     override fun getViewType() = multiplayerServiceRecord.getViewType()
 
     override fun getData(): List<BaseServiceRecordResult> {
