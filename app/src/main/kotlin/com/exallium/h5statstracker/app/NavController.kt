@@ -7,6 +7,7 @@ import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import nl.komponents.kovenant.ui.successUi
 import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 
 public class NavController(val mainController: MainController, val navView: NavigationView) {
@@ -22,7 +23,7 @@ public class NavController(val mainController: MainController, val navView: Navi
                 R.id.arena_stats -> goToArenaSummary()
                 R.id.warzone_stats -> goToWarzoneSummary()
                 R.id.custom_stats -> goToCustomSummary()
-                R.id.campaign_stats -> goToCampaignSummary()
+                //R.id.campaign_stats -> goToCampaignSummary()
                 R.id.medals -> goToMedals()
                 R.id.commendations -> goToCommendations()
                 R.id.weapons -> goToWeapons()
@@ -37,8 +38,12 @@ public class NavController(val mainController: MainController, val navView: Navi
             spartanImageView.setImageDrawable(null)
             gamertagTextView.text = t
 
-            mainController.profileService.getSpartanImageUrl(t?:"") successUi {
-                Picasso.with(navView.context).load(it).fit().into(spartanImageView)
+            if (t == null || t.isNullOrEmpty()) {
+                spartanImageView.setImageDrawable(null)
+            } else {
+                mainController.profileService.getSpartanImageUrl(t) successUi {
+                    Picasso.with(navView.context).load(it).fit().into(spartanImageView)
+                }
             }
         }
 
@@ -47,14 +52,16 @@ public class NavController(val mainController: MainController, val navView: Navi
         }
 
         override fun onError(e: Throwable?) {
-            Timber.e("Something Bad Happened", e)
+            Timber.e(e, "Something Bad Happened")
         }
     }
 
     init {
         gamertagTextView = navView.findViewById(R.id.gamertag) as TextView
         spartanImageView = navView.findViewById(R.id.spartan_image) as CircleImageView
-        mainController.gamertagSubject.subscribe(GamertagSubscriber())
+        mainController.gamertagSubject
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(GamertagSubscriber())
         navView.setNavigationItemSelectedListener(navListener)
     }
 

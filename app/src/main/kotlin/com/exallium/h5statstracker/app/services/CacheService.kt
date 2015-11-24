@@ -11,44 +11,50 @@ class CacheService(val cacheDirectory: File) {
     private val diskCache = DiskCache(cacheDirectory)
 
     fun <T> readListFromCache(key: String, elementClass: Class<T>, ttlMillis: Long, origin: () -> List<T>) = async {
-        synchronized(key) {
-            val memResult = memoryCache.readList(key, elementClass)
+        val normalizedKey = key.toLowerCase()
+        synchronized(normalizedKey) {
+            val memResult = memoryCache.readList(normalizedKey, elementClass)
             if (memResult.isNotEmpty()) {
                 memResult
             } else {
-                val diskResult = diskCache.readList(key, elementClass)
+                val diskResult = diskCache.readList(normalizedKey, elementClass)
                 if (diskResult.isNotEmpty()) {
-                    memoryCache.write(diskResult, key, ttlMillis)
+                    memoryCache.write(diskResult, normalizedKey, ttlMillis)
                     diskResult
                 } else {
-                    Timber.v("Requesting List from Origin: %s".format(key))
+                    Timber.v("Requesting List from Origin: %s".format(normalizedKey))
                     val originResult = origin()
-                    diskCache.write(originResult, key, ttlMillis)
-                    memoryCache.write(originResult, key, ttlMillis)
+                    diskCache.write(originResult, normalizedKey, ttlMillis)
+                    memoryCache.write(originResult, normalizedKey, ttlMillis)
                     originResult
                 }
             }
         }
+    } fail {
+        Timber.e(it, "Failed to get List from Cache")
     }
 
     fun <T> readItemFromCache(key: String, itemClass: Class<T>, ttlMillis: Long, origin: () -> T?) = async {
-        synchronized(key) {
-            val memResult = memoryCache.readItem(key, itemClass)
+        val normalizedKey = key.toLowerCase()
+        synchronized(normalizedKey) {
+            val memResult = memoryCache.readItem(normalizedKey, itemClass)
             if (memResult != null) {
                 memResult
             } else {
-                val diskResult = diskCache.readItem(key, itemClass)
+                val diskResult = diskCache.readItem(normalizedKey, itemClass)
                 if (diskResult != null) {
-                    memoryCache.write(diskResult, key, ttlMillis)
+                    memoryCache.write(diskResult, normalizedKey, ttlMillis)
                     diskResult
                 } else {
-                    Timber.v("Requesting Item from Origin: %s".format(key))
+                    Timber.v("Requesting Item from Origin: %s".format(normalizedKey))
                     val originResult = origin()
-                    diskCache.write(originResult as Any, key, ttlMillis)
-                    memoryCache.write(originResult, key, ttlMillis)
+                    diskCache.write(originResult as Any, normalizedKey, ttlMillis)
+                    memoryCache.write(originResult, normalizedKey, ttlMillis)
                     originResult
                 }
             }
         }
+    } fail {
+        Timber.e(it, "Failed to get Item from Cache")
     }
 }

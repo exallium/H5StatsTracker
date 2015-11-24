@@ -26,7 +26,7 @@ public object Router : Flow.Listener {
         ARENA_SERVICE_RECORD(R.string.arena_stats, R.id.arena_stats),
         WARZONE_SERVICE_RECORD(R.string.warzone_stats, R.id.warzone_stats),
         CUSTOM_SERVICE_RECORD(R.string.custom_stats, R.id.custom_stats),
-        CAMPAIGN_SERVICE_RECORD(R.string.campaign_stats, R.id.campaign_stats),
+        CAMPAIGN_SERVICE_RECORD(R.string.campaign_stats, R.id.custom_stats),
         MEDALS(R.string.medals, R.id.medals),
         COMMENDATIONS(R.string.commendations, R.id.commendations),
         WEAPONS(R.string.weapons, R.id.weapons),

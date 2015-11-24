@@ -35,7 +35,8 @@ class StatsService(val mainController: MainController) {
         val cacheKey = "%s-%s-%d-%d-%s".format(MATCHES_KEY, gamertag, startOffset, count, gameModes.joinToString("-"))
 
         return mainController.cacheService.readListFromCache(cacheKey, Match::class.java, MATCHES_TTL, {
-            val response = mainController.apiFactory.stats.getRecentMatchInfo(gamertag, gameModes, startOffset, count).execute()
+            val response = mainController.apiFactory.stats.getRecentMatchInfo(gamertag, gameModes.joinToString(","), startOffset, count).execute()
+            Timber.d("%s: Origin Response Code: %d", cacheKey, response.code())
             if (response.isSuccess && response.body().resultCount != 0) {
                 response.body().results
             } else {
@@ -74,11 +75,11 @@ class StatsService(val mainController: MainController) {
                                            resultKey: String,
                                            resultTtl: Long,
                                            resultClass: Class<T>,
-                                           serviceRecordFn: (List<String?>) -> Call<ServiceRecordCollection<T>>): Promise<T?, Exception> {
+                                           serviceRecordFn: (String?) -> Call<ServiceRecordCollection<T>>): Promise<T?, Exception> {
         val gamertag = getGamertag(bundle)
         val key = "%s-%s".format(resultKey, gamertag)
         return mainController.cacheService.readItemFromCache(key, resultClass, resultTtl, {
-            val response = serviceRecordFn(listOf(gamertag)).execute()
+            val response = serviceRecordFn(gamertag).execute()
             if (response.code() == 200 && response.body().results.size != 0) {
                 val result = response.body().results.first()
                 if (result.resultCode == 0) {

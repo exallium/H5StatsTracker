@@ -7,6 +7,9 @@ import com.exallium.h5statstracker.app.services.CacheService
 import com.exallium.h5statstracker.app.services.MetadataService
 import com.exallium.h5statstracker.app.services.ProfileService
 import com.exallium.h5statstracker.app.services.StatsService
+import nl.komponents.kovenant.async
+import nl.komponents.kovenant.ui.failUi
+import nl.komponents.kovenant.ui.successUi
 import rx.lang.kotlin.BehaviourSubject
 import timber.log.Timber
 
@@ -40,14 +43,16 @@ public class MainController(val context: Context) {
         }
     }
 
-    fun onSubmitGamertag(gamertag: String) = if (gamertag != "") {
+    private fun gamertagValid(gamertag: String)= async {
+        profileService.getSpartanImageUrl(gamertag).get()
         context.getSharedPreferences(Constants.PREFERENCES, Constants.PREFERENCE_MODE)
-                .edit().putString(Constants.GAMERTAG, gamertag).apply()
-        onResume()
-        true
-    } else {
-        false
+            .edit().putString(Constants.GAMERTAG, gamertag).apply()
     }
+
+    fun onSubmitGamertag(gamertag: String) =
+        gamertagValid(gamertag) successUi {
+            onResume()
+        }
 
     fun prepareBundle(bundle: Bundle): Bundle {
         val prepBundle = if (bundle.containsKey(Constants.ACTIVITY_BUNDLE)) {
