@@ -5,4 +5,8 @@
     <dimen name="service_record_column_width">320dp</dimen>
     <dimen name="arena_csr_icon_height">160dp</dimen>
     <dimen name="multiplayer_segment_height">80dp</dimen>
+
+    <integer name="medal_tile_column_count">2</integer>
+    <dimen name="medal_tile_width">160dp</dimen>
+    <dimen name="medal_tile_icon_size">150dp</dimen>
 </resources>

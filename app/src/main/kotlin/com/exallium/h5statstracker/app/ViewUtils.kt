@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -33,9 +34,16 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
         return GamertagContentView(context, controller, request.bundle)
     }
 
+    val columnCount = context.resources.getInteger(when (request.route) {
+        Router.Route.MEDALS -> R.integer.medal_tile_column_count
+        else -> R.integer.service_record_column_count
+    })
+
     val view = RecyclerView(context)
     view.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-    view.layoutManager = LinearLayoutManager(context)
+    view.layoutManager = StaggeredGridLayoutManager(
+            columnCount,
+            StaggeredGridLayoutManager.VERTICAL)
     view.adapter = when (request.route) {
         Router.Route.SERVICE_RECORD_SUMMARY -> InfographicAdapter(
                 getViewByType,
