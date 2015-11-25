@@ -19,8 +19,8 @@ import com.exallium.h5statstracker.app.services.MetadataService
 import com.exallium.h5statstracker.app.services.StatsService
 import com.exallium.h5statstracker.app.views.infographic.InfographicView
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.common.CommonTextView
-import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.summary.DURATION_PER_PERCENT
-import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.summary.PLAYTIME_FORMATTER
+import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.common.DURATION_PER_PERCENT
+import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.common.PLAYTIME_FORMATTER
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.ui.successUi
 import org.joda.time.Period
@@ -52,6 +52,11 @@ internal fun getMultiplayerStats(data: List<BaseServiceRecordResult>): List<Base
 }
 
 class SpartanRankView(context: Context, val metadataService: MetadataService) : InfographicView<List<BaseServiceRecordResult>>(context, R.layout.multiplayer_spartan_rank) {
+
+    private val progressBar = findViewById(R.id.xp_progress_bar) as ProgressBar
+    private val serviceRank = findViewById(R.id.service_rank) as TextView
+    private val progressText = findViewById(R.id.xp_progress_text) as TextView
+
     override fun render(data: List<BaseServiceRecordResult>) {
         if (data.isEmpty()) {
             return
@@ -63,7 +68,7 @@ class SpartanRankView(context: Context, val metadataService: MetadataService) : 
         val currentRankPromise = metadataService.getSpartanRank(spartanRank)
         val nextRankPromise = metadataService.getSpartanRank(spartanRank + 1)
 
-        (findViewById(R.id.service_rank) as TextView).text = "%s%d".format(context.getString(R.string.sr), spartanRank)
+        serviceRank.text = "%s%d".format(context.getString(R.string.sr), spartanRank)
 
         combine(currentRankPromise, nextRankPromise) successUi {
 
@@ -73,13 +78,13 @@ class SpartanRankView(context: Context, val metadataService: MetadataService) : 
             val delta = nextRank.startXp - currentRank.startXp
             val progress = result.xp - currentRank.startXp
 
-            val progressBar = (findViewById(R.id.xp_progress_bar) as ProgressBar)
+
             val progressBarEndValue = Math.round((progress.toFloat() / delta.toFloat()) * 100)
             val anim = ObjectAnimator.ofInt(progressBar, "progress", progressBarEndValue)
             anim.setDuration(DURATION_PER_PERCENT * progressBarEndValue)
             anim.start()
 
-            (findViewById(R.id.xp_progress_text) as TextView).text = "%d / %d".format(progress, delta)
+            progressText.text = "%d / %d".format(progress, delta)
         }
     }
 
@@ -147,12 +152,14 @@ class AssistsView(context: Context) : CommonTextView<List<BaseServiceRecordResul
 }
 
 class KillDeathRatioView(context: Context) : InfographicView<List<BaseServiceRecordResult>>(context, R.layout.multiplayer_kdr) {
+
+    private val kdrView = findViewById(R.id.kdr) as TextView
+    private val kdrLabelView = findViewById(R.id.kdr_label) as TextView
+    private val killsView = findViewById(R.id.total_kills) as TextView
+    private val deathsView = findViewById(R.id.total_deaths) as TextView
+
     override fun render(data: List<BaseServiceRecordResult>) {
 
-        val kdrView = findViewById(R.id.kdr) as TextView
-        val kdrLabelView = findViewById(R.id.kdr_label) as TextView
-        val killsView = findViewById(R.id.total_kills) as TextView
-        val deathsView = findViewById(R.id.total_deaths) as TextView
 
         kdrLabelView.setText(if (data.size == 1) R.string.kd else R.string.multiplayer_kd)
 
@@ -176,6 +183,11 @@ class MatchResultsView(context: Context, val statsService: StatsService) : Infog
                 CampaignResult::class.java to "campaign")
     }
 
+    private val totalWinsView = findViewById(R.id.total_wins) as TextView
+    private val totalLossesView = findViewById(R.id.total_losses) as TextView
+    private val lastGames = findViewById(R.id.last_games) as TextView
+    private val seg = findViewById(R.id.segments) as SegmentView
+
     override fun render(data: List<BaseServiceRecordResult>) {
         if (data.isEmpty()) {
             return
@@ -193,12 +205,11 @@ class MatchResultsView(context: Context, val statsService: StatsService) : Infog
         val totalWins = stats.map { it.totalGamesWon } .sum()
         val totalLosses = stats.map { it.totalGamesLost } .sum()
 
-        (findViewById(R.id.total_wins) as TextView).text = "%d".format(totalWins)
-        (findViewById(R.id.total_losses) as TextView).text = "%d".format(totalLosses)
+        totalWinsView.text = "%d".format(totalWins)
+        totalLossesView.text = "%d".format(totalLosses)
 
         statsService.onRequestMatchHistory(bundle) successUi {
 
-            val lastGames = findViewById(R.id.last_games) as TextView
             // filter out all games player didn't finish
             val playerResults = it.map {
                 val p = it.players.find { it.player.gamertag == player }
@@ -206,8 +217,6 @@ class MatchResultsView(context: Context, val statsService: StatsService) : Infog
             } .filter { it != 0 }
 
             lastGames.text = context.resources.getString(R.string.last_games, playerResults.size)
-
-            val seg = findViewById(R.id.segments) as SegmentView
             seg.resultSet = playerResults
         }
 

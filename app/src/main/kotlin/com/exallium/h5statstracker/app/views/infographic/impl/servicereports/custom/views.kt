@@ -21,6 +21,9 @@ val getCustomServiceRecordViewByType = { viewType: Int, context: Context, mainCo
 }
 
 class TopVariantView(context: Context, val metadataService: MetadataService) : InfographicView<List<BaseServiceRecordResult>>(context, R.layout.custom_top_variant) {
+    private val iconView = findViewById(R.id.variant_icon) as ImageView
+    private val nameView = findViewById(R.id.variant_name) as TextView
+
     override fun render(data: List<BaseServiceRecordResult>) {
         val result = data.filterIsInstance(CustomResult::class.java).first()
 
@@ -32,9 +35,6 @@ class TopVariantView(context: Context, val metadataService: MetadataService) : I
             visibility = View.GONE
             return
         }
-
-        val iconView = findViewById(R.id.variant_icon) as ImageView
-        val nameView = findViewById(R.id.variant_name) as TextView
 
         metadataService.getGameBaseVariant(topVariant.gameBaseVariantId) successUi {
             if (it != null) {

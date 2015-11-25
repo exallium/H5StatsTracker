@@ -25,25 +25,26 @@ val getViewByType: (Int, Context, MainController) -> InfographicView<List<BaseSe
     }
 }
 
-val PLAYTIME_FORMAT = PeriodFormatterBuilder()
-        .minimumPrintedDigits(2)
+abstract class CommonTextView<T>(context: Context) : InfographicView<T>(context, R.layout.common_text_view) {
+    private val dataView = findViewById(R.id.common_text_data) as TextView
+    private val labelView = findViewById(R.id.common_text_label) as TextView
+
+    override fun render(data: T) {
+        if (data is List<*> && data.isEmpty()) {
+            return
+        }
+
+        bindText(data, labelView, dataView)
+    }
+
+    abstract fun bindText(data: T, labelView: TextView, dataView: TextView)
+}
+
+internal val DURATION_PER_PERCENT = 8L
+internal val PLAYTIME_FORMATTER = PeriodFormatterBuilder()
         .appendHours()
         .appendSuffix(":")
         .appendMinutes()
         .appendSuffix(":")
         .appendSeconds()
         .toFormatter()
-
-abstract class CommonTextView<T>(context: Context) : InfographicView<T>(context, R.layout.common_text_view) {
-    override fun render(data: T) {
-        if (data is List<*> && data.isEmpty()) {
-            return
-        }
-
-        val dataView = findViewById(R.id.common_text_data) as TextView
-        val labelView = findViewById(R.id.common_text_label) as TextView
-        bindText(data, labelView, dataView)
-    }
-
-    abstract fun bindText(data: T, labelView: TextView, dataView: TextView)
-}

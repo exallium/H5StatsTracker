@@ -22,10 +22,11 @@ val getCampaignServiceRecordViewByType = { viewType: Int, context: Context, main
 }
 
 class PlaythroughView(context: Context, val titleId: Int) : InfographicView<List<BaseServiceRecordResult>>(context, R.layout.campaign_playthrough) {
-    override fun render(data: List<BaseServiceRecordResult>) {
-        val type = findViewById(R.id.campaign_type) as TextView
-        val completed = findViewById(R.id.campaign_missions_completed) as TextView
 
+    private val type = findViewById(R.id.campaign_type) as TextView
+    private val completed = findViewById(R.id.campaign_missions_completed) as TextView
+
+    override fun render(data: List<BaseServiceRecordResult>) {
         type.setText(titleId)
 
         val campaignResult = data.filterIsInstance(CampaignResult::class.java).first()
@@ -36,7 +37,6 @@ class PlaythroughView(context: Context, val titleId: Int) : InfographicView<List
             value: CampaignStat.CampaignMissionStats -> value.soloStats
         }
 
-
         val statsMaps = campaignResult.campaignStat.campaignMissionStats.map(mapFn)
         val totalCompletedMissions = statsMaps.filter { it.isNotEmpty() }.count()
         completed.text = "%d/15".format(totalCompletedMissions)
@@ -44,10 +44,11 @@ class PlaythroughView(context: Context, val titleId: Int) : InfographicView<List
 }
 
 class CompletionView(context: Context, val metadataService: MetadataService) : InfographicView<List<BaseServiceRecordResult>>(context, R.layout.campaign_completion) {
-    override fun render(data: List<BaseServiceRecordResult>) {
-        val skullCount = findViewById(R.id.skulls) as TextView
-        val intelCount = findViewById(R.id.mission_intel) as TextView
 
+    private val skullCount = findViewById(R.id.skulls) as TextView
+    private val intelCount = findViewById(R.id.mission_intel) as TextView
+
+    override fun render(data: List<BaseServiceRecordResult>) {
         val campaignResult = data.filterIsInstance(CampaignResult::class.java).first()
 
         campaignResult.campaignStat.impulses.forEach {
