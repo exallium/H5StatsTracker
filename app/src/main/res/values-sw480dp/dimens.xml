@@ -6,7 +6,5 @@
     <!-- Half the width, -16dp for space between -->
     <dimen name="service_record_column_width">232dp</dimen>
 
-    <integer name="medal_tile_column_count">4</integer>
-    <dimen name="medal_tile_width">160dp</dimen>
-    <dimen name="medal_tile_icon_size">150dp</dimen>
+    <dimen name="medal_tile_width">72dp</dimen>
 </resources>

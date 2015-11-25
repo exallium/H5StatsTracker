@@ -13,8 +13,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.exallium.h5.api.models.metadata.Medal
+import com.exallium.h5.api.models.metadata.SpriteLocation
 import com.exallium.h5statstracker.app.views.GamertagContentView
 import com.exallium.h5statstracker.app.views.infographic.InfographicAdapter
+import com.exallium.h5statstracker.app.views.infographic.impl.medals.MedalAggregateViewModel
+import com.exallium.h5statstracker.app.views.infographic.impl.medals.MedalTileDataFactory
+import com.exallium.h5statstracker.app.views.infographic.impl.medals.getMedalViewByType
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.arena.ArenaDataFactory
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.campaign.CampaignDataFactory
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.common.getViewByType
@@ -35,7 +39,6 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
     }
 
     val columnCount = context.resources.getInteger(when (request.route) {
-        Router.Route.MEDALS -> R.integer.medal_tile_column_count
         else -> R.integer.service_record_column_count
     })
 
@@ -60,15 +63,18 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
         Router.Route.CAMPAIGN_SERVICE_RECORD -> InfographicAdapter(
                 getViewByType,
                 CampaignDataFactory(controller.statsService, request.bundle), controller)
+        Router.Route.MEDALS -> InfographicAdapter(
+                getMedalViewByType,
+                MedalTileDataFactory(controller, request.bundle), controller)
         else -> throw IllegalStateException("Unknown Route")
     }
     return view
 }
 
-class MedalSpriteTarget(val medal: Medal, val view: ImageView) : Target {
+class MedalSpriteTarget(val medalSpriteLocation: SpriteLocation, val medalName: String, val view: ImageView) : Target {
 
     companion object {
-        val MEDAL_CACHE = HashMap<Medal, Bitmap?>()
+        val MEDAL_CACHE = HashMap<String, Bitmap?>()
     }
 
     override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
@@ -80,11 +86,12 @@ class MedalSpriteTarget(val medal: Medal, val view: ImageView) : Target {
     }
 
     override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-        val cachedMedal = MEDAL_CACHE[medal]
+        val transformation = MedalSpriteSheetTransformation(medalSpriteLocation, medalName)
+        val cachedMedal = MEDAL_CACHE[transformation.key()]
         if (cachedMedal == null) {
-            val medalImage = MedalSpriteSheetTransformation(medal).transform(bitmap)
+            val medalImage = transformation.transform(bitmap)
             view.setImageBitmap(medalImage)
-            MEDAL_CACHE[medal] = medalImage
+            MEDAL_CACHE[transformation.key()] = medalImage
         } else {
             view.setImageBitmap(cachedMedal)
         }
@@ -92,23 +99,21 @@ class MedalSpriteTarget(val medal: Medal, val view: ImageView) : Target {
 
 }
 
-class MedalSpriteSheetTransformation(medal: Medal) : Transformation {
+class MedalSpriteSheetTransformation(val spriteLocation: SpriteLocation, val medalName: String) : Transformation {
 
     private val x: Int
     private val y: Int
     private val w: Int
     private val h: Int
-    private val medalName: String
 
     init {
-        x = medal.spriteLocation.left
-        y = medal.spriteLocation.top
-        w = medal.spriteLocation.width
-        h = medal.spriteLocation.height
-        medalName = medal.name
+        x = spriteLocation.left
+        y = spriteLocation.top
+        w = spriteLocation.width
+        h = spriteLocation.height
     }
 
-    override fun key(): String? = "tf:medal:%s:%d:%d:%d:%d".format(medalName, x, y, w, h)
+    override fun key(): String = "tf:medal:%s:%d:%d:%d:%d".format(medalName, x, y, w, h)
 
     override fun transform(source: Bitmap?): Bitmap? {
         val b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)

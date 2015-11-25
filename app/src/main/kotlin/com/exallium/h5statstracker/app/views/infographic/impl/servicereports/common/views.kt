@@ -2,7 +2,8 @@ package com.exallium.h5statstracker.app.views.infographic.impl.servicereports.co
 
 import android.content.Context
 import android.widget.TextView
-import com.exallium.h5.api.models.stats.servicerecords.BaseServiceRecordResult
+import com.exallium.h5.api.models.stats.common.BaseStats
+import com.exallium.h5.api.models.stats.servicerecords.*
 import com.exallium.h5statstracker.app.MainController
 import com.exallium.h5statstracker.app.R
 import com.exallium.h5statstracker.app.views.infographic.InfographicView
@@ -48,3 +49,12 @@ internal val PLAYTIME_FORMATTER = PeriodFormatterBuilder()
         .appendSuffix(":")
         .appendSeconds()
         .toFormatter()
+
+internal fun getStats(data: List<BaseServiceRecordResult>): List<BaseStats> {
+    val warzoneStat = data.filterIsInstance(WarzoneResult::class.java).map { it.warzoneStat }
+    val arenaStat = data.filterIsInstance(ArenaResult::class.java).map { it.arenaStat }
+    val customStat = data.filterIsInstance(CustomResult::class.java).map { it.customStat }
+    val campaignStat = data.filterIsInstance(CampaignResult::class.java).map { it.campaignStat }
+
+    return listOf(warzoneStat, arenaStat, customStat, campaignStat).filter { it.isNotEmpty() }.map { it.first() }
+}
