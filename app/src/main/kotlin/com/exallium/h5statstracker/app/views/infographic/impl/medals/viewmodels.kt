@@ -3,13 +3,12 @@ package com.exallium.h5statstracker.app.views.infographic.impl.medals
 import android.os.Bundle
 import com.exallium.h5.api.models.metadata.SpriteLocation
 import com.exallium.h5statstracker.app.MainController
-import com.exallium.h5statstracker.app.views.infographic.InfographicDataFactory
+import com.exallium.h5statstracker.app.views.infographic.DrawerInfographicDataFactory
 import com.exallium.h5statstracker.app.views.infographic.InfographicViewModel
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.common.getStats
 import nl.komponents.kovenant.all
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.ui.successUi
-import rx.subjects.PublishSubject
 
 enum class MedalViewType {
     TILE, DRAWER;
@@ -17,7 +16,9 @@ enum class MedalViewType {
     fun getViewType() = ordinal
 }
 
-class MedalTileDataFactory(val mainController: MainController, val bundle: Bundle) : InfographicDataFactory<MedalContainer> {
+class MedalTileDataFactory(val mainController: MainController, val bundle: Bundle) : DrawerInfographicDataFactory<MedalContainer> {
+    override fun getDrawerViewModel(data: MedalContainer) = MedalContainerViewModel(data, MedalViewType.DRAWER)
+
     override fun getViewModels(fn: (List<InfographicViewModel<MedalContainer>>) -> Unit) {
         val arenaRecordPromise = mainController.statsService.onRequestArenaServiceRecord(bundle)
         val warzoneRecordPromise = mainController.statsService.onRequestWarzoneServiceRecord(bundle)
@@ -47,7 +48,7 @@ class MedalTileDataFactory(val mainController: MainController, val bundle: Bundl
                 } .filterNotNull().sortedByDescending { it.count }
 
                 val containers = aggregates.mapIndexed { i, medalAggregate ->
-                    val container = MedalContainer(medalAggregate, i % 4)
+                    val container = MedalContainer(medalAggregate, i)
                     MedalContainerViewModel(container, MedalViewType.TILE)
                 }
 

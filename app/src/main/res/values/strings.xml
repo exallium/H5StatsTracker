@@ -3,7 +3,7 @@
     <string name="gamertag_hint">XBox Live Gamertag</string>
     <string name="submit">Submit</string>
 
-    <string name="service_record">Stats Summary</string>
+    <string name="service_record">Multiplayer Summary</string>
     <string name="gamertag_title">Log In</string>
     <string name="gamertag_input_error">Invalid Gamertag</string>
     <string name="gamertag_not_logged_in">Not Logged In</string>
@@ -47,6 +47,9 @@
     <string name="campaign_collectible_skulls">SKULLS</string>
     <string name="campaign_collectible_mission_intel">MISSION INTEL</string>
     <string name="campaign_c">--</string>
+    <string name="accuracy">ACCURACY</string>
+    <string name="shots_landed">SHOTS LANDED</string>
+    <string name="shots_fired">SHOTS FIRED</string>
 
     <string name="multiplayer_playtime">MULTIPLAYER PLAYTIME</string>
     <string name="multiplayer_games_completed">MULTIPLAYER GAMES COMPLETED</string>

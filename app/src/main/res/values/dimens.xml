@@ -6,6 +6,8 @@
     <dimen name="arena_csr_icon_height">160dp</dimen>
     <dimen name="multiplayer_segment_height">80dp</dimen>
 
+    <integer name="weapon_column_count">2</integer>
+    <dimen name="weapon_width">160dp</dimen>
     <integer name="medal_tile_column_count">4</integer>
     <dimen name="medal_tile_width">72dp</dimen>
 </resources>

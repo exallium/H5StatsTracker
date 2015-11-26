@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_marginBottom="16dp"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <include android:layout_width="0dip"
+                 android:layout_height="wrap_content"
+                 layout="@layout/medal_tile_2_arrow" android:id="@+id/arrow_1" android:layout_weight="1"/>
+        <include android:layout_width="0dip"
+                 android:layout_height="wrap_content"
+                 layout="@layout/medal_tile_2_arrow" android:id="@+id/arrow_2" android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:id="@+id/weapon_kills" android:layout_weight="1" android:gravity="center_horizontal"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"/>
+        <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:id="@+id/weapon_accuracy" android:layout_weight="1" android:gravity="center_horizontal"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:text="@string/kills"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_weight="1" android:gravity="center_horizontal"/>
+        <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:text="@string/accuracy"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_weight="1" android:gravity="center_horizontal"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView android:layout_width="0dip" android:layout_height="wrap_content" android:text="0"
+                  android:id="@+id/shots_fired" android:layout_weight="1" android:gravity="center_horizontal"
+                  android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"/>
+        <TextView android:layout_width="0dip" android:layout_height="wrap_content" android:text="0"
+                  android:id="@+id/shots_landed" android:layout_weight="1" android:gravity="center_horizontal"
+                  android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"/>
+        <TextView android:layout_width="0dip" android:layout_height="wrap_content" android:text="0"
+                  android:id="@+id/headshots" android:layout_weight="1" android:gravity="center_horizontal"
+                  android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"/>
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+        <TextView android:layout_width="0dip" android:layout_height="wrap_content" android:text="@string/shots_fired"
+                  android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2" android:layout_weight="1"
+                  android:gravity="center_horizontal" android:password="false"/>
+        <TextView android:layout_width="0dip" android:layout_height="wrap_content" android:text="@string/shots_landed"
+                  android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2" android:layout_weight="1"
+                  android:gravity="center_horizontal"/>
+        <TextView android:layout_width="0dip" android:layout_height="wrap_content" android:text="@string/headshots"
+                  android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2" android:layout_weight="1"
+                  android:gravity="center_horizontal" android:id="@+id/textView4"/>
+    </LinearLayout>
+</LinearLayout>

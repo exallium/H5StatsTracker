@@ -38,6 +38,7 @@ class MedalTileView2(context: Context) : InfographicView<MedalContainer>(context
 class MedalDrawerView(context: Context) : InfographicView<MedalContainer>(context, R.layout.medal_tile_2_drawer) {
     private val medalTitle = findViewById(R.id.medal_tile_title) as TextView
     private val medalDescription = findViewById(R.id.medal_tile_description) as TextView
+    private val columnCount = context.resources.getInteger(R.integer.medal_tile_column_count)
 
     init {
         val params = StaggeredGridLayoutManager.LayoutParams(layoutParams)
@@ -55,6 +56,6 @@ class MedalDrawerView(context: Context) : InfographicView<MedalContainer>(contex
         medalTitle.text = data.medalAggregate.name
         medalDescription.text = data.medalAggregate.description
         arrowMap.forEach { it.value.visibility = INVISIBLE }
-        arrowMap[data.position % 4]?.visibility = VISIBLE
+        arrowMap[data.position % columnCount]?.visibility = VISIBLE
     }
 }

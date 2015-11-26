@@ -1,21 +1,21 @@
-package com.exallium.h5statstracker.app.views.infographic.impl.medals
+package com.exallium.h5statstracker.app.views.infographic
 
 import android.content.Context
-import android.view.View
 import android.view.ViewGroup
 import com.exallium.h5statstracker.app.MainController
-import com.exallium.h5statstracker.app.views.infographic.InfographicAdapter
-import com.exallium.h5statstracker.app.views.infographic.InfographicDataFactory
-import com.exallium.h5statstracker.app.views.infographic.InfographicView
+import com.exallium.h5statstracker.app.views.infographic.impl.medals.MedalViewType
 
-public class MedalInfographicAdapter(viewFactory: (Int, Context, MainController) -> InfographicView<MedalContainer>,
-                                        dataFactory: InfographicDataFactory<MedalContainer>,
-                                        mainController: MainController)
-: InfographicAdapter<MedalContainer>(viewFactory, dataFactory, mainController) {
+public abstract class DrawerInfographicAdapter<T>(viewFactory: (Int, Context, MainController) -> InfographicView<T>,
+                                                  dataFactory: DrawerInfographicDataFactory<T>,
+                                                  mainController: MainController)
+: InfographicAdapter<T>(viewFactory, dataFactory, mainController) {
+
+    abstract fun getDrawerType(): Int
+    abstract fun getColumnCount(context: Context): Int
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfographicViewHolder {
         val holder = super.onCreateViewHolder(parent, viewType)
-        if (viewType == MedalViewType.TILE.getViewType()) {
+        if (viewType != getDrawerType()) {
             holder.onClick = onClick
         }
         return holder
@@ -31,15 +31,16 @@ public class MedalInfographicAdapter(viewFactory: (Int, Context, MainController)
                     .filter { it.getViewType() == MedalViewType.DRAWER.getViewType() }
                     .count()
 
-            val arrow = (viewHolder.position - drawerOffset) % 4
-            val index = position + 4 - arrow
+            val columnCount = getColumnCount(viewHolder.infoView.context)
+            val arrow = (viewHolder.position - drawerOffset) % columnCount
+            val index = position + columnCount - arrow
 
             val atPosition = if (viewModels.size > index) viewModels[index] else null
             val container = viewModel.getData()
-            val drawerViewModel = MedalContainerViewModel(container, MedalViewType.DRAWER)
+            val drawerViewModel = dataFactory.getDrawerViewModel(container)
 
-            if (atPosition != null && atPosition.getViewType() == MedalViewType.DRAWER.getViewType()) {
-                if (atPosition.getData().equals(container)) {
+            if (atPosition != null && atPosition.getViewType() == getDrawerType()) {
+                if (atPosition.getData()?.equals(container)?:false) {
                     viewModels.removeAt(index)
                     notifyItemRemoved(index)
                 } else {

@@ -26,6 +26,8 @@ class MetadataService(val apiFactory: ApiFactory, val cacheService: CacheService
         val FLEXIBLE_STATS_TTL = Units.DAY_MILLIS * 7
         val MEDALS = "medals"
         val MEDALS_TTL = Units.MONTH_MILLIS
+        val WEAPONS = "weapons"
+        val WEAPONS_TTL = Units.MONTH_MILLIS
     }
 
     private fun <E> getList(key: String, ttlMillis: Long, elementClass: Class<E>, call: Call<List<E>>) =
@@ -105,6 +107,16 @@ class MetadataService(val apiFactory: ApiFactory, val cacheService: CacheService
             apiFactory.metadata.medals)
 
     fun getMedal(id: Long) = getMedals() then {
+        it.find { it.id == id }
+    }
+
+    fun getWeapons() = getList(
+            WEAPONS,
+            WEAPONS_TTL,
+            Weapon::class.java,
+            apiFactory.metadata.weapons)
+
+    fun getWeapon(id: Long) = getWeapons() then {
         it.find { it.id == id }
     }
 }

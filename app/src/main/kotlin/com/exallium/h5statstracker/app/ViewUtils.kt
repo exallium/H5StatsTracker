@@ -16,7 +16,8 @@ import android.widget.ImageView
 import com.exallium.h5.api.models.metadata.SpriteLocation
 import com.exallium.h5statstracker.app.views.GamertagContentView
 import com.exallium.h5statstracker.app.views.infographic.InfographicAdapter
-import com.exallium.h5statstracker.app.views.infographic.impl.medals.MedalInfographicAdapter
+import com.exallium.h5statstracker.app.views.infographic.DrawerInfographicAdapter
+import com.exallium.h5statstracker.app.views.infographic.impl.medals.MedalAdapter
 import com.exallium.h5statstracker.app.views.infographic.impl.medals.MedalTileDataFactory
 import com.exallium.h5statstracker.app.views.infographic.impl.medals.getMedalViewByType
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.arena.ArenaDataFactory
@@ -25,6 +26,9 @@ import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.com
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.custom.CustomDataFactory
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.multiplayer.MultiplayerDataFactory
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.warzone.WarzoneDataFactory
+import com.exallium.h5statstracker.app.views.infographic.impl.weapons.WeaponAdapter
+import com.exallium.h5statstracker.app.views.infographic.impl.weapons.WeaponDataFactory
+import com.exallium.h5statstracker.app.views.infographic.impl.weapons.getWeaponsViewByType
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import com.squareup.picasso.Transformation
@@ -40,6 +44,7 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
     }
 
     val columnCount = context.resources.getInteger(when (request.route) {
+        Router.Route.WEAPONS -> R.integer.weapon_column_count
         Router.Route.MEDALS -> R.integer.medal_tile_column_count
         else -> R.integer.service_record_column_count
     })
@@ -76,9 +81,12 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
         Router.Route.CAMPAIGN_SERVICE_RECORD -> InfographicAdapter(
                 getViewByType,
                 CampaignDataFactory(controller.statsService, request.bundle), controller)
-        Router.Route.MEDALS -> MedalInfographicAdapter(
+        Router.Route.MEDALS -> MedalAdapter(
                 getMedalViewByType,
                 MedalTileDataFactory(controller, request.bundle), controller)
+        Router.Route.WEAPONS -> WeaponAdapter(
+                getWeaponsViewByType,
+                WeaponDataFactory(controller, request.bundle), controller)
         else -> throw IllegalStateException("Unknown Route")
     }
     return container
