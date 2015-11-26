@@ -8,7 +8,6 @@ import com.exallium.h5statstracker.app.services.MetadataService
 import com.exallium.h5statstracker.app.services.ProfileService
 import com.exallium.h5statstracker.app.services.StatsService
 import nl.komponents.kovenant.async
-import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import rx.lang.kotlin.BehaviourSubject
 import timber.log.Timber
@@ -24,6 +23,7 @@ public class MainController(val context: Context) {
 
     init {
         if (BuildConfig.DEBUG) {
+            Timber.uprootAll()
             Timber.plant(Timber.DebugTree())
         }
     }
@@ -39,7 +39,7 @@ public class MainController(val context: Context) {
             gamertagSubject.onNext(gamerTag)
             val bundle = Bundle()
             bundle.putString(Constants.GAMERTAG, gamerTag)
-            Router.replaceTo(Router.Request(Router.Route.SERVICE_RECORD_SUMMARY))
+            Router.replaceIfOn(Router.Route.GAMERTAG, Router.Request(Router.Route.SERVICE_RECORD_SUMMARY))
         }
     }
 

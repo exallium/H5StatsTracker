@@ -62,4 +62,10 @@ public object Router : Flow.Listener {
         flow.replaceTo(request)
     }
 
+    public fun replaceIfOn(route: Route, request: Request) {
+        if ((flow.backstack.current().screen as Request).route == route) {
+            replaceTo(request)
+        }
+    }
+
 }
