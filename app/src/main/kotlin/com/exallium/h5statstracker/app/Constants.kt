@@ -13,4 +13,5 @@ public object Constants {
     public val GAME_MODES = "h5.bundle.GAME_MODES"
     public val COUNT = "h5.bundle.COUNT"
     public val START_OFFSET = "h5.bundle.START_OFFSET"
+    public val EVICT_CACHES = "h5.bundle.EVICT_CACHES"
 }

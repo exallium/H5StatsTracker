@@ -36,7 +36,14 @@ abstract class BaseCache {
         }
     }
 
+    fun evictAll() {
+       synchronized(mutex) {
+           syncrhonizedEvictAll()
+       }
+    }
+
     protected abstract fun synchronizedWrite(data: Any, key: String, ttlMillis: Long)
     protected abstract fun <T> synchronizedItemRead(key: String, itemClass: Class<T>): T?
     protected abstract fun <E> synchronizedListRead(key: String, elementClass: Class<E>): List<E>
+    protected abstract fun syncrhonizedEvictAll()
 }

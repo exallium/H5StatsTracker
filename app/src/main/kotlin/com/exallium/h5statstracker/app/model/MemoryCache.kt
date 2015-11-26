@@ -5,6 +5,11 @@ import java.util.*
 
 class MemoryCache : BaseCache()  {
 
+    override fun syncrhonizedEvictAll() {
+        Timber.v("Evicting Memory Cache")
+        cacheMap.clear()
+    }
+
     override fun synchronizedWrite(data: Any, key: String, ttlMillis: Long) {
         Timber.v("Writing $key to Memory")
         val createdMillis = System.currentTimeMillis()

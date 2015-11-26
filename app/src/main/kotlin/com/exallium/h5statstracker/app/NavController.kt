@@ -25,7 +25,7 @@ public class NavController(val mainController: MainController, val navView: Navi
                 R.id.custom_stats -> goToCustomSummary()
                 //R.id.campaign_stats -> goToCampaignSummary()
                 R.id.medals -> goToMedals()
-                R.id.commendations -> goToCommendations()
+                //R.id.commendations -> goToCommendations()
                 R.id.weapons -> goToWeapons()
                 else -> false
             }
@@ -105,7 +105,7 @@ public class NavController(val mainController: MainController, val navView: Navi
     }
 
     private fun goToCommendations(): Boolean {
-        Router.onRequest(Router.Request(Router.Route.COMMENDATIONS))
+        //Router.onRequest(Router.Request(Router.Route.COMMENDATIONS))
         return true
     }
 

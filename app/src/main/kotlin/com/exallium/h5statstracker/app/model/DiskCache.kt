@@ -5,6 +5,11 @@ import java.io.File
 
 class DiskCache(val cacheDirectory: File) : BaseCache() {
 
+    override fun syncrhonizedEvictAll() {
+        Timber.v("Evicting Disk Cache")
+        cacheDirectory.listFiles { it.name.endsWith("cacheRecord") } ?.forEach { it.delete() }
+    }
+
     companion object {
         val CACHE_RECORD_SUFFIX = ".cacheRecord"
         val JSON_SUFFIX = ".json"

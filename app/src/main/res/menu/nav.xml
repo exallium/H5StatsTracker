@@ -9,7 +9,7 @@
     </group>
     <group android:id="@+id/attainable_stuff">
         <item android:id="@+id/medals" android:title="@string/medals" android:icon="@drawable/ic_bookmark_black_24dp" />
-        <item android:id="@+id/commendations" android:title="@string/commendations" />
+        <!--<item android:id="@+id/commendations" android:title="@string/commendations" />-->
         <item android:id="@+id/weapons" android:title="@string/weapons" />
     </group>
     <group android:id="@+id/system">

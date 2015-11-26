@@ -10,6 +10,11 @@ class CacheService(val cacheDirectory: File) {
     private val memoryCache = MemoryCache()
     private val diskCache = DiskCache(cacheDirectory)
 
+    fun evictCaches() = async {
+        memoryCache.evictAll()
+        diskCache.evictAll()
+    }
+
     fun <T> readListFromCache(key: String, elementClass: Class<T>, ttlMillis: Long, origin: () -> List<T>) = async {
         val normalizedKey = key.toLowerCase()
         synchronized(normalizedKey) {

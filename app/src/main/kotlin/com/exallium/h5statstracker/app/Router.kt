@@ -28,7 +28,7 @@ public object Router : Flow.Listener {
         CUSTOM_SERVICE_RECORD(R.string.custom_stats, R.id.custom_stats),
         CAMPAIGN_SERVICE_RECORD(R.string.campaign_stats, R.id.custom_stats),
         MEDALS(R.string.medals, R.id.medals),
-        COMMENDATIONS(R.string.commendations, R.id.commendations),
+        //COMMENDATIONS(R.string.commendations, R.id.commendations),
         WEAPONS(R.string.weapons, R.id.weapons),
         GAMERTAG(R.string.gamertag_title, R.id.log_out)
     }
@@ -43,10 +43,15 @@ public object Router : Flow.Listener {
     }
 
     public fun onRequest(request: Request) {
-        val currentScreen = backstack.current().screen as Request
+        val currentScreen = flow.backstack.current().screen as Request
         if (request != currentScreen) {
             flow.goTo(request)
         }
+    }
+
+    public fun onRefresh() {
+        val currentScreen = flow.backstack.current().screen as Request
+        listener.get()?.goToScreen(currentScreen)
     }
 
     public fun goBack(): Boolean {
