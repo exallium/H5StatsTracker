@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -26,6 +28,7 @@ import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.war
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import com.squareup.picasso.Transformation
+import nl.komponents.kovenant.ui.successUi
 import timber.log.Timber
 import java.util.*
 
@@ -41,8 +44,19 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
         else -> R.integer.service_record_column_count
     })
 
-    val view = RecyclerView(context)
-    view.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+    val container = LayoutInflater.from(context).inflate(R.layout.refreshable_list, null) as SwipeRefreshLayout
+
+    container.setOnRefreshListener {
+        controller.cacheService.evictCaches() successUi {
+            container.isRefreshing = false
+            container.destroyDrawingCache()
+            container.clearAnimation()
+            Router.onRefresh()
+        }
+    }
+
+    container.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+    val view = container.findViewById(R.id.list) as RecyclerView
     view.layoutManager = StaggeredGridLayoutManager(
             columnCount,
             StaggeredGridLayoutManager.VERTICAL)
@@ -67,7 +81,7 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
                 MedalTileDataFactory(controller, request.bundle), controller)
         else -> throw IllegalStateException("Unknown Route")
     }
-    return view
+    return container
 }
 
 class MedalSpriteTarget(val medalSpriteLocation: SpriteLocation, val medalName: String, val view: ImageView) : Target {
