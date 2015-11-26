@@ -9,15 +9,16 @@ import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.com
 import nl.komponents.kovenant.all
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.ui.successUi
+import rx.subjects.PublishSubject
 
 enum class MedalViewType {
-    TILE;
+    TILE, DRAWER;
 
     fun getViewType() = ordinal
 }
 
-class MedalTileDataFactory(val mainController: MainController, val bundle: Bundle) : InfographicDataFactory<MedalAggregate> {
-    override fun getViewModels(fn: (List<InfographicViewModel<MedalAggregate>>) -> Unit) {
+class MedalTileDataFactory(val mainController: MainController, val bundle: Bundle) : InfographicDataFactory<MedalContainer> {
+    override fun getViewModels(fn: (List<InfographicViewModel<MedalContainer>>) -> Unit) {
         val arenaRecordPromise = mainController.statsService.onRequestArenaServiceRecord(bundle)
         val warzoneRecordPromise = mainController.statsService.onRequestWarzoneServiceRecord(bundle)
         val customRecordPromise = mainController.statsService.onRequestCustomServiceRecord(bundle)
@@ -41,19 +42,25 @@ class MedalTileDataFactory(val mainController: MainController, val bundle: Bundl
                 val aggregates = it.map {
                     it?.let {
                         val totalCount = medalAwards[it.id]?.map { it.count } ?.sum()?.toLong() ?: 0L
-                        MedalAggregateViewModel(MedalAggregate(it.name, it.description, it.spriteLocation, totalCount))
+                        MedalAggregate(it.name, it.description, it.spriteLocation, totalCount)
                     }
+                } .filterNotNull().sortedByDescending { it.count }
+
+                val containers = aggregates.mapIndexed { i, medalAggregate ->
+                    val container = MedalContainer(medalAggregate, i % 4)
+                    MedalContainerViewModel(container, MedalViewType.TILE)
                 }
 
-                fn(aggregates.filterNotNull().sortedByDescending { it.getData().count })
+                fn(containers)
             }
         }
     }
 }
 
+data class MedalContainer(val medalAggregate: MedalAggregate, val position: Int)
 data class MedalAggregate(val name: String, val description: String, val spriteLocation: SpriteLocation, val count: Long)
 
-class MedalAggregateViewModel(val medalAggregate: MedalAggregate) : InfographicViewModel<MedalAggregate> {
-    override fun getViewType() = MedalViewType.TILE.getViewType()
-    override fun getData() = medalAggregate
+class MedalContainerViewModel(val medalContainer: MedalContainer, val medalViewType: MedalViewType) : InfographicViewModel<MedalContainer> {
+    override fun getViewType() = medalViewType.getViewType()
+    override fun getData() = medalContainer
 }

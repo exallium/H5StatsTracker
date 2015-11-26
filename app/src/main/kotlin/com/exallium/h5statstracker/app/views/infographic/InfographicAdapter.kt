@@ -6,10 +6,14 @@ import android.view.ViewGroup
 import com.exallium.h5statstracker.app.MainController
 import java.util.*
 
-public class InfographicAdapter<T>(val viewFactory: (Int, Context, MainController) -> InfographicView<T>,
+public open class InfographicAdapter<T>(val viewFactory: (Int, Context, MainController) -> InfographicView<T>,
                                    val dataFactory: InfographicDataFactory<T>,
                                    val mainController: MainController)
     : RecyclerView.Adapter<InfographicAdapter.InfographicViewHolder>() {
+
+    interface OnClickListener {
+        fun onClick(viewHolder: InfographicViewHolder)
+    }
 
     init {
         dataFactory.getViewModels {
@@ -18,7 +22,7 @@ public class InfographicAdapter<T>(val viewFactory: (Int, Context, MainControlle
         }
     }
 
-    private val viewModels = ArrayList<InfographicViewModel<T>>()
+    protected val viewModels = ArrayList<InfographicViewModel<T>>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfographicViewHolder = InfographicViewHolder(viewFactory(viewType, parent.context, mainController))
 
@@ -31,6 +35,12 @@ public class InfographicAdapter<T>(val viewFactory: (Int, Context, MainControlle
     override fun getItemViewType(position: Int) = viewModels[position].getViewType();
 
     public inner class InfographicViewHolder(val infoView: InfographicView<T>) : RecyclerView.ViewHolder(infoView) {
+
+        var onClick : OnClickListener? = null
+
+        init {
+            infoView.setOnClickListener { onClick?.onClick(this)  }
+        }
 
         public fun onBind(viewModel: InfographicViewModel<T>) {
             infoView.render(viewModel.getData())

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <LinearLayout
+            android:weightSum="4"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <include layout="@layout/medal_tile_2_arrow" android:id="@+id/arrow_1" />
+        <include layout="@layout/medal_tile_2_arrow" android:id="@+id/arrow_2" />
+        <include layout="@layout/medal_tile_2_arrow" android:id="@+id/arrow_3" />
+        <include layout="@layout/medal_tile_2_arrow" android:id="@+id/arrow_4" />
+    </LinearLayout>
+    <TextView
+            android:layout_width="@dimen/service_record_column_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+            android:id="@+id/medal_tile_title" android:singleLine="true"
+            android:ellipsize="end"
+            android:paddingLeft="16dp" android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+    />
+    <TextView
+            android:layout_width="@dimen/service_record_column_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+            android:id="@+id/medal_tile_description" android:paddingLeft="16dp"
+            android:paddingRight="16dp" android:paddingTop="4dp" android:paddingBottom="4dp"
+            android:visibility="visible" android:lines="4"
+    />
+</LinearLayout>

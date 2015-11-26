@@ -5,18 +5,16 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import com.exallium.h5.api.models.metadata.Medal
 import com.exallium.h5.api.models.metadata.SpriteLocation
 import com.exallium.h5statstracker.app.views.GamertagContentView
 import com.exallium.h5statstracker.app.views.infographic.InfographicAdapter
-import com.exallium.h5statstracker.app.views.infographic.impl.medals.MedalAggregateViewModel
+import com.exallium.h5statstracker.app.views.infographic.impl.medals.MedalInfographicAdapter
 import com.exallium.h5statstracker.app.views.infographic.impl.medals.MedalTileDataFactory
 import com.exallium.h5statstracker.app.views.infographic.impl.medals.getMedalViewByType
 import com.exallium.h5statstracker.app.views.infographic.impl.servicereports.arena.ArenaDataFactory
@@ -39,6 +37,7 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
     }
 
     val columnCount = context.resources.getInteger(when (request.route) {
+        Router.Route.MEDALS -> R.integer.medal_tile_column_count
         else -> R.integer.service_record_column_count
     })
 
@@ -63,7 +62,7 @@ public fun getRouterView(request: Router.Request, context: Context, controller: 
         Router.Route.CAMPAIGN_SERVICE_RECORD -> InfographicAdapter(
                 getViewByType,
                 CampaignDataFactory(controller.statsService, request.bundle), controller)
-        Router.Route.MEDALS -> InfographicAdapter(
+        Router.Route.MEDALS -> MedalInfographicAdapter(
                 getMedalViewByType,
                 MedalTileDataFactory(controller, request.bundle), controller)
         else -> throw IllegalStateException("Unknown Route")
