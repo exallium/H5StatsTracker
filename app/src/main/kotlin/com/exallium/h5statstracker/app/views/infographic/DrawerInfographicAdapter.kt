@@ -33,20 +33,24 @@ public abstract class DrawerInfographicAdapter<T>(viewFactory: (Int, Context, Ma
 
             val columnCount = getColumnCount(viewHolder.infoView.context)
             val arrow = (viewHolder.position - drawerOffset) % columnCount
-            val index = position + columnCount - arrow
+            val index = Math.min(position + columnCount - arrow, viewModels.size)
 
-            val atPosition = if (viewModels.size > index) viewModels[index] else null
+            val (oldModel, oldIndex) = if (viewModels.size > index)
+                Pair(viewModels[index], index)
+            else
+                Pair(viewModels.last(), viewModels.lastIndex)
+
             val container = viewModel.getData()
             val drawerViewModel = dataFactory.getDrawerViewModel(container)
 
-            if (atPosition != null && atPosition.getViewType() == getDrawerType()) {
-                if (atPosition.getData()?.equals(container)?:false) {
-                    viewModels.removeAt(index)
-                    notifyItemRemoved(index)
+            if (oldModel.getViewType() == getDrawerType()) {
+                if (oldModel.getData()?.equals(container)?:false) {
+                    viewModels.removeAt(oldIndex)
+                    notifyItemRemoved(oldIndex)
                 } else {
-                    viewModels.removeAt(index)
-                    viewModels.add(index, drawerViewModel)
-                    notifyItemChanged(index)
+                    viewModels.removeAt(oldIndex)
+                    viewModels.add(oldIndex, drawerViewModel)
+                    notifyItemChanged(oldIndex)
                 }
             } else {
                 viewModels.add(index, drawerViewModel)

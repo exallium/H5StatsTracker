@@ -47,7 +47,7 @@ class WeaponDataFactory(val mainController: MainController, val bundle: Bundle) 
                     } else {
                         null
                     }
-                } .filterNotNull().sortedByDescending { it.kills }
+                } .filterNotNull().filter { it.kills != 0L || it.shotsFired != 0L } .sortedByDescending { it.kills }
 
                 val viewModels = aggregates.mapIndexed { i, weaponViewModel -> WeaponContainer(weaponViewModel, i) }
                     .map { WeaponViewModel(it, WeaponViewType.WEAPON) }
