@@ -1,19 +1,21 @@
 package com.exallium.h5statstracker.app
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-
 import kotlinx.android.synthetic.base.contentFrame
-import kotlinx.android.synthetic.toolbar.toolbar_title
 import kotlinx.android.synthetic.base.drawer
-import nl.komponents.kovenant.android.startKovenant
-import nl.komponents.kovenant.android.stopKovenant
+import kotlinx.android.synthetic.toolbar.toolbar_title
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), Router.Listener {
 
@@ -35,23 +37,23 @@ class MainActivity : AppCompatActivity(), Router.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startKovenant()
         setContentView(R.layout.base)
-        mainController = MainController(applicationContext)
 
-        val navView = findViewById(R.id.nav) as NavigationView
-        navController = NavController(mainController, navView)
-
-        Router.onCreate(this)
+        val serviceIntent = Intent(this, MainService::class.java)
+        bindService(serviceIntent, serviceConnection, BIND_ADJUST_WITH_ACTIVITY)
     }
 
     override fun onResume() {
         super.onResume()
-        mainController.onResume()
+        try {
+            mainController.onResume()
+        } catch (e: UninitializedPropertyAccessException) {
+            Timber.d(e, "onResume Called before service bound")
+        }
     }
 
     override fun onDestroy() {
-        stopKovenant()
+        unbindService(serviceConnection)
         super.onDestroy()
     }
 
@@ -77,6 +79,26 @@ class MainActivity : AppCompatActivity(), Router.Listener {
         } else {
             DrawerLayout.LOCK_MODE_UNLOCKED
         })
+    }
+
+    private val serviceConnection = object : ServiceConnection {
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            Timber.d("Disconnected from %s", name?.packageName)
+        }
+
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            Timber.d("Connected to %s", name?.packageName)
+
+            mainController = (service as MainBinder).mainController
+
+            val navView = findViewById(R.id.nav) as NavigationView
+            navController = NavController(mainController, navView)
+
+            Router.onCreate(this@MainActivity)
+            mainController.onResume()
+        }
+
     }
 
 }
